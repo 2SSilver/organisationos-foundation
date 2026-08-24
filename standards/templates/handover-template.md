@@ -6,13 +6,13 @@ Handover Forum: <date of the Leadership Forum the incoming Admin will attend bef
 
 ## 1. Open items at handover
 
-Open propagation actions — snapshot of `leadership/cadence/propagation-log.md`:
+Open propagation actions — snapshot of the Leadership repo's `cadence/propagation-log.md`:
 
 - Open propagation actions: <count>
 - Items >30 days past deadline: <count>
 - Items requiring escalation: <list with CDR refs>
 
-Open harness-drift / improvement items — snapshot of `leadership/steward/drift-log.md`:
+Open harness-drift / improvement items — snapshot of the Leadership repo's `steward/drift-log.md`:
 
 - Open drift / improvement items: <count>
 

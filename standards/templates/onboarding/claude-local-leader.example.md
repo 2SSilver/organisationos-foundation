@@ -1,11 +1,11 @@
 # Personal overlay — Leader (gitignored)
 
-> Copy this file to `CLAUDE.local.md` at repo root (or `leadership/CLAUDE.local.md`) and personalise.
+> Copy this file to `CLAUDE.local.md` at the Leadership repo's root and personalise.
 
 ## I am the Leader
 
-Commit area: `leadership/strategy/`, `leadership/cadence/` (forum minutes, agendas)
-Required reviewer for: cross-domain decisions (CDRs), changes to `leadership/`, two-approver on Foundation's `standards/` and `.github/workflows/`
+Commit area: `./strategy/`, `./cadence/` (forum minutes, agendas)
+Required reviewer for: cross-domain decisions (CDRs), changes to the Leadership repo, two-approver on Foundation's `standards/` and `.github/workflows/`
 Does not commit inside any single domain.
 
 ## My preferences
@@ -29,9 +29,9 @@ Does not commit inside any single domain.
 
 ## My agent preferences
 
-- Read the `leadership/cadence/` minutes before each forum
+- Read the `./cadence/` minutes before each forum
 - Use `summariser.md` agent to digest long strategy drafts
-- Run `find-relevant-knowledge` across `leadership/strategy/` before drafting a new direction
+- Run `find-relevant-knowledge` across `./strategy/` before drafting a new direction
 
 ## Clone layout and additionalDirectories
 

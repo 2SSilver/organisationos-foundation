@@ -5,7 +5,7 @@ name: stale-path-check
 # five commands and the Pattern A mount allow-list without failing anything.
 # This check makes the stale form un-reintroducible.
 #
-# Two banned forms:
+# Three banned forms:
 #   1. `foundation/<path>` — the monorepo prefix. Foundation's content is at
 #      its repo root. Inside Foundation use a bare path; from a sibling repo
 #      use ../organisationos-foundation/<path>.
@@ -13,17 +13,46 @@ name: stale-path-check
 #      The published repos are organisationos-*, so these resolve nowhere.
 #      Note the depth rule: a file one level in (domain-N/…, cadence/…) needs
 #      ../../organisationos-<repo>/, not ../.
+#   3. `leadership/<path>`, `domain/<path>` — the same monorepo prefix as #1,
+#      for the other two repos. The 2026-05-22 split created three monorepo
+#      prefixes; only the Foundation one was ever guarded, so this form was
+#      free to spread unguarded (16 live instances found in Foundation when
+#      this check was added). Fix is the same as #1: a bare path inside the
+#      repo the content actually lives in, or ../organisationos-<repo>/<path>
+#      (mind the depth rule from #2) from a sibling.
+#
+#      This check is CASE-SENSITIVE, unlike #1. `Domain/Leadership` and
+#      `Cross-domain/…` are a standing prose idiom in this harness's own
+#      docs, where the slash means "or" between two capitalised proper nouns,
+#      not a path separator (e.g. "Domain/Leadership callers",
+#      "Cross-domain/substrate artefacts"). A case-insensitive match on
+#      `domain/` or `leadership/` would fold "Domain/Leadership" down to
+#      "domain/" and flag it as a path violation — the idiom is always
+#      capitalised, so matching case-sensitively (lowercase pattern, no `-i`)
+#      leaves it untouched. `Foundation/` never appears as a slash-or idiom —
+#      nothing else pairs with "Foundation" that way — which is why check #1
+#      can afford `-i` without this problem. The hyphen-aware word boundary
+#      below (`(^|[^-A-Za-z])`) additionally protects lowercase compounds
+#      like "cross-domain/substrate", which is common prose and not a path.
 #
 # Allowed and deliberately excluded from the first pattern:
 #   - `organisationos-foundation` — the repo slug in `uses:` lines and the
 #     canonical sibling path.
 #   - `_foundation` — the actions/checkout destination in banned-string-check.
 #   - this file itself (`--exclude=stale-path-check.yml`) — the comment above
-#     spells out both banned forms verbatim so the error message can show a
+#     spells out all three banned forms verbatim so the error message can show a
 #     developer the exact string to stop using, which would otherwise make
 #     this check fail on every PR in every repo that runs it. grep --exclude
 #     matches on basename, so the one flag covers this reusable and each
 #     repo's caller of the same name.
+#   - URLs (`scheme://...`) are SCRUBBED from the line before the third check
+#     tests it, and a `/` immediately before the word is exempt. `domain` and
+#     `leadership` are far more collision-prone English tokens than
+#     `foundation`: an adopter's `https://intranet/leadership/handbook`, or a
+#     local `docs/domain/overview.md`, are legitimate and must not be flagged.
+#     The monorepo form this check bans always appears at the START of a path
+#     reference — after a backtick, space, quote or line start — never after a
+#     slash, which is what makes that exemption safe rather than a loophole.
 #   - The allow-list is applied by SCRUBBING those substrings from a lowercased
 #     copy of each line and testing what remains — not by discarding matching
 #     lines. Discarding would hide a genuine violation that happens to share a
@@ -54,6 +83,18 @@ jobs:
           if [ -n "$bare" ]; then
             echo "::error::bare sibling path found. Use ../organisationos-<repo>/ (and ../../ from one level in)."
             printf '%s\n' "$bare"
+            fail=1
+          fi
+          exit $fail
+      - name: Reject unguarded leadership/domain monorepo prefix
+        run: |
+          set -e
+          fail=0
+          hits=$(grep -rnE '(leadership|domain)/' . --exclude-dir=.git --exclude=stale-path-check.yml \
+                  | awk '{ t=$0; gsub(/organisationos-leadership/,"",t); gsub(/organisationos-domain/,"",t); gsub(/[a-zA-Z][a-zA-Z0-9+.-]*:\/\/[^ )`"'"'"']*/,"",t); if (t ~ /(^|[^-A-Za-z\/])(leadership|domain)\//) print }' || true)
+          if [ -n "$hits" ]; then
+            echo "::error::monorepo-era 'leadership/<path>' or 'domain/<path>' prefix found. Use a bare path inside the repo the content lives in, or ../organisationos-<repo>/<path> (../../ from one level in) from a sibling. This check is case-sensitive: 'Domain/Leadership' and similar capitalised slash-or idioms are not flagged."
+            printf '%s\n' "$hits"
             fail=1
           fi
           exit $fail

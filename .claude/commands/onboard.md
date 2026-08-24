@@ -16,18 +16,18 @@ Then output a dated 30-day plan with these milestones. Save the output to `<doma
 
 - **Day 1:** Read the domain's CLAUDE.md, glossary, and the last 3 sessions in `<knowledge-folder>/`. Do not commit.
 - **Day 2:** Copy the role-specific
-  `standards/templates/onboarding/claude-local-<role>.example.md` (e.g.
+  `../organisationos-foundation/standards/templates/onboarding/claude-local-<role>.example.md` (e.g.
   `claude-local-domain-lead.example.md`) to `CLAUDE.local.md` — at the repo
   root for Admin and Leader, or `domain-<N>/CLAUDE.local.md` for Domain Lead,
   Product Owner and Team Member, per that file's own line 3. Copy the role-specific
-  `standards/templates/onboarding/settings.local.json.example-<role>`
+  `../organisationos-foundation/standards/templates/onboarding/settings.local.json.example-<role>`
   to your working repo's `.claude/settings.local.json` (gitignored).
   Install the workflow plugin per the org's `.claude/settings.json`
   pin (see §15).
 - **Day 3:** Install the pre-commit banned-string hook:
 
   ```bash
-  ln -sf ../../.github/hooks/banned-string-pre-commit .git/hooks/pre-commit
+  cp ../organisationos-foundation/.github/hooks/banned-string-pre-commit .git/hooks/pre-commit
   chmod +x .git/hooks/pre-commit
   ```
 

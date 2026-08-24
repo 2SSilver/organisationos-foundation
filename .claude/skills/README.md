@@ -36,4 +36,4 @@ description: Use this instead of superpowers:requesting-code-review when the art
 ---
 ```
 
-The Domain Lead approves any routing declaration; the Admin tracks them in `leadership/steward/skill-registry.md`.
+The Domain Lead approves any routing declaration; the Admin tracks them in `../organisationos-leadership/steward/skill-registry.md`.
