@@ -38,7 +38,7 @@ Leader chairs. Each clash, overlap, or missing interface is named in a 4-quadran
 
 ### Round 4 (75 min) — write the output
 
-The Leader and Admin draft a `vocabulary-YYYY-MM-DD.md` committed to `../organisationos-leadership/cadence/`. Output includes:
+The Leader and Admin draft a `vocabulary-YYYY-MM-DD.md` committed to the Leadership repo's `cadence/`. Output includes:
 
 - Final domain names and one-paragraph charters
 - Glossary additions (terms with their resolved meanings)

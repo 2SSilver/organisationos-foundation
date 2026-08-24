@@ -22,4 +22,4 @@ For each domain, the Admin (or per-domain steward at scale) reviews:
 - [ ] **Improvement-loop proposal** — one harness change drafted as a PR (skill, CI rule, template, or none with rationale). Admin-Engineer cadence visible artefact.
 - [ ] Commit-volume sanity check — any domain <3 commits/person/month after week 6 of adoption? If yes, the answer is workflow integration, not more CI rules (see v3.1 §18).
 
-Close this issue with a one-paragraph summary linked from `../organisationos-leadership/steward/drift-log.md`.
+Close this issue with a one-paragraph summary linked from the Leadership repo's `steward/drift-log.md`.

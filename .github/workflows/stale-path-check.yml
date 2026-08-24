@@ -40,11 +40,19 @@ name: stale-path-check
 #     canonical sibling path.
 #   - `_foundation` — the actions/checkout destination in banned-string-check.
 #   - this file itself (`--exclude=stale-path-check.yml`) — the comment above
-#     spells out both banned forms verbatim so the error message can show a
+#     spells out all three banned forms verbatim so the error message can show a
 #     developer the exact string to stop using, which would otherwise make
 #     this check fail on every PR in every repo that runs it. grep --exclude
 #     matches on basename, so the one flag covers this reusable and each
 #     repo's caller of the same name.
+#   - URLs (`scheme://...`) are SCRUBBED from the line before the third check
+#     tests it, and a `/` immediately before the word is exempt. `domain` and
+#     `leadership` are far more collision-prone English tokens than
+#     `foundation`: an adopter's `https://intranet/leadership/handbook`, or a
+#     local `docs/domain/overview.md`, are legitimate and must not be flagged.
+#     The monorepo form this check bans always appears at the START of a path
+#     reference — after a backtick, space, quote or line start — never after a
+#     slash, which is what makes that exemption safe rather than a loophole.
 #   - The allow-list is applied by SCRUBBING those substrings from a lowercased
 #     copy of each line and testing what remains — not by discarding matching
 #     lines. Discarding would hide a genuine violation that happens to share a
@@ -83,7 +91,7 @@ jobs:
           set -e
           fail=0
           hits=$(grep -rnE '(leadership|domain)/' . --exclude-dir=.git --exclude=stale-path-check.yml \
-                  | awk '{ t=$0; gsub(/organisationos-leadership/,"",t); gsub(/organisationos-domain/,"",t); if (t ~ /(^|[^-A-Za-z])(leadership|domain)\//) print }' || true)
+                  | awk '{ t=$0; gsub(/organisationos-leadership/,"",t); gsub(/organisationos-domain/,"",t); gsub(/[a-zA-Z][a-zA-Z0-9+.-]*:\/\/[^ )`"'"'"']*/,"",t); if (t ~ /(^|[^-A-Za-z\/])(leadership|domain)\//) print }' || true)
           if [ -n "$hits" ]; then
             echo "::error::monorepo-era 'leadership/<path>' or 'domain/<path>' prefix found. Use a bare path inside the repo the content lives in, or ../organisationos-<repo>/<path> (../../ from one level in) from a sibling. This check is case-sensitive: 'Domain/Leadership' and similar capitalised slash-or idioms are not flagged."
             printf '%s\n' "$hits"

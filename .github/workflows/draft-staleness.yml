@@ -3,6 +3,14 @@ name: draft-staleness
 on:
   schedule:
     # Runs weekly on Monday at 09:00 UTC; the monthly DRI issue (1st of month) reads its output.
+    #
+    # Foundation has no `_drafts/` of its own, so this run always reports clean —
+    # and Leadership's identical cron was removed for exactly that reason. It is
+    # kept HERE deliberately: Actions is enabled only in Foundation, so this is
+    # the one place the detector executes at all. It is the live smoke test that
+    # this workflow still runs green after the git-history rewrite, which matters
+    # precisely because the detector it replaced could never fire anywhere. The
+    # callers in Domain set their own schedule; this trigger does not affect them.
     - cron: '0 9 * * 1'
   workflow_dispatch:
   workflow_call:
