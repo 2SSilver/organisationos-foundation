@@ -9,7 +9,7 @@ The Admin role has two functions:
 - **Admin-Steward** — custody: drift log, propagation tracking, monthly DRI sweep, banned-pattern list, FORMATS gate, template retirement.
 - **Admin-Engineer** — AI-Ops improvement loop: traces → feedback → harness diff.
 
-I commit unilaterally only to `leadership/steward/`. Everywhere else I open a PR.
+I commit unilaterally only to `../../../../organisationos-leadership/steward/`. Everywhere else I open a PR.
 
 ## Decision rights
 

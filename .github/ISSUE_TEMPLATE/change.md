@@ -15,7 +15,7 @@ labels: change
 - [ ] Domain 3
 - [ ] Domain 4
 - [ ] Foundation (substrate)
-- [ ] leadership/
+- [ ] Leadership (repo)
 
 ## What
 
