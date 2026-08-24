@@ -27,7 +27,7 @@ Then output a dated 30-day plan with these milestones. Save the output to `<doma
 - **Day 3:** Install the pre-commit banned-string hook:
 
   ```bash
-  ln -sf ../../.github/hooks/banned-string-pre-commit .git/hooks/pre-commit
+  cp ../organisationos-foundation/.github/hooks/banned-string-pre-commit .git/hooks/pre-commit
   chmod +x .git/hooks/pre-commit
   ```
 
