@@ -223,6 +223,20 @@ jobs:
     # live in Foundation (spec §11.2), so this is the one place the check needs to run.
     # All four of those categories must appear in the substrate regex below — omitting one
     # is a silent false pass, not a smaller check.
+    #
+    # Asked twice: should `standards/` and `glossary.md` be added to this regex too? No —
+    # and this is why, so it stops being re-asked. The four paths in the regex
+    # (cross-domain-decisions, interfaces, architectural-decisions, nfrs) are exactly the
+    # four `.github/CODEOWNERS` entries carrying the six-owner superset: Admin + Leader +
+    # all four Domain Leads. `standards/` and `glossary.md` are CODEOWNERS two-owner entries
+    # (Admin + Leader only, no Domain Lead). The Approval checklist this job verifies asks
+    # "did each affected Domain Lead approve" — unanswerable for a change no Domain Lead is
+    # ever asked to review, so widening the regex would make CI demand a checklist item
+    # CODEOWNERS never requires anyone to satisfy.
+    # Known residual (unchanged by this comment, left as-is): `standards/` and `glossary.md`
+    # get CODEOWNERS' two-owner review (Admin + Leader) and no checklist verification at
+    # all — there is no CI check that a `standards/` or `glossary.md` PR's approvals are
+    # real, the way this job verifies the four six-owner paths. Accepted gap, not fixed here.
     # AR-09: NO job-level `if:`. GitHub counts a skipped required check as
     # passing, so a label-gated job silently reported green on every
     # unlabelled cross-domain PR. Applicability is now computed from the
