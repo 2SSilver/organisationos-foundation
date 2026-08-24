@@ -18,12 +18,12 @@ Draft a CDR from the current session's cross-domain implications.
    - Context (one paragraph)
    - Decision (one paragraph — proposed)
    - Consequences per domain (action + owner placeholder + deadline placeholder)
-5. Save as `../organisationos-foundation/cross-domain-decisions/_drafts/cdr-{timestamp}-{slug}.md` (or `_drafts/` inside the foundation folder if the directory exists).
+5. Save as `<current-domain>/_drafts/cdr-{timestamp}-{slug}.md` — the current domain's own `_drafts/` folder, matching where `update-wiki` already drafts CDRs. Do not write into `../organisationos-foundation/`: a Domain session's `settings.json` denies writes there by design (confidentiality boundary, spec §8).
 6. Surface the path for the operator to review.
 
 ## What this command does NOT do
 
-- Does not open a PR. The operator does that after review.
+- Does not open a PR. The operator does that after review, once the draft has moved from the Domain clone into Foundation's `cross-domain-decisions/` — the boundary is crossed by a PR, not by a direct write.
 - Does not assign owners or deadlines — those are operator decisions.
 - Does not move the CDR to `Accepted` — that's the Leadership Forum.
 
