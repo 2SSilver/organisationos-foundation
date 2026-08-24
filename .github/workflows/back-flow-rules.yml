@@ -22,9 +22,34 @@ name: back-flow-rules
 # anonymised report). The source-only expectation for the carve-out is
 # confirmed by the two reviewers during back-flow review, not by CI.
 # Applies to PRs labelled `back-flow`.
+#
+# `knowledge-paths` input: the path tripwire's folder list, configurable for
+# two reasons. (1) Spec §8 says the back-flow ritual does not apply to
+# Pattern B adopters (harness-as-primary-workspace) — Pattern B has an exit
+# from every other Pattern A mechanism but had none from this tripwire, since
+# the folder list was hardcoded. Passing an empty string here gives Pattern B
+# that exit: the tripwire goes inert (the label check itself, the 500-line
+# cap and the 24h cool-off are unaffected — they still apply to anything a
+# reviewer labels `back-flow` by hand). (2) `methods|prompts` is not a folder
+# any shipped domain pattern actually produces — `domain-1/` ships `_archive
+# _drafts adrs CLAUDE.md glossary.md README.md references.md`, and spec §7's
+# three named patterns produce `topic-x/`; `strategy/`+`roadmap/`; and
+# `engineering/`+`analysis/`. A Pattern A adopter names their own knowledge
+# folders instead of inheriting a list that never matched their layout.
+# Default is the original `methods|prompts` value, so a caller that passes
+# nothing keeps today's behaviour unchanged.
 
 on:
   workflow_call:
+    inputs:
+      knowledge-paths:
+        description: >-
+          Pipe-separated folder names under domain-N/ that trip the back-flow
+          path tripwire (e.g. "methods|prompts" or "engineering|analysis").
+          Pass an empty string to disable the tripwire entirely (Pattern B).
+        required: false
+        type: string
+        default: 'methods|prompts'
 
 jobs:
   back-flow:
@@ -49,11 +74,15 @@ jobs:
           set -e
           labelled=${{ contains(github.event.pull_request.labels.*.name, 'back-flow') }}
           files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          knowledge_paths="${{ inputs.knowledge-paths }}"
           shaped=no
-          if printf '%s\n' "$files" | grep -qE '^domain-[0-9]+/(methods|prompts)/'; then shaped=yes; fi
+          if [ -n "$knowledge_paths" ] && printf '%s\n' "$files" | grep -qE "^domain-[0-9]+/($knowledge_paths)/"; then
+            shaped=yes
+          fi
+          echo "knowledge-paths input: '$knowledge_paths'"
           echo "labelled=$labelled shaped=$shaped"
           if [ "$labelled" != "true" ] && [ "$shaped" = "yes" ]; then
-            echo "::error::This PR changes domain-N/methods/ or domain-N/prompts/ — the folders back-flow content lands in — but carries no 'back-flow' label. Either label it so the 500-line cap and 24h cool-off apply, or move the change out of those folders. Do not merge an unlabelled back-flow PR."
+            echo "::error::This PR changes domain-N/($knowledge_paths)/ — the folders back-flow content lands in — but carries no 'back-flow' label. Either label it so the 500-line cap and 24h cool-off apply, or move the change out of those folders. Do not merge an unlabelled back-flow PR."
             exit 1
           fi
           if [ "$labelled" != "true" ]; then
