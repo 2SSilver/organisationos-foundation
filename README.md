@@ -118,7 +118,7 @@ GreenLeaf Research Lab runs four domains: **research**, **operations**, **fundra
 
 A researcher on the research domain proposes a shared anonymisation standard — a method for removing identifying details from published datasets before they enter any domain's working folder. This is a cross-domain concern (research produces data, operations stores it, compliance signs off, fundraising references outcomes).
 
-The researcher drafts a CDR using `standards/templates/cdr-template.md` and opens a PR in Foundation. The PR triggers the `cdr-review` CI check. One Leader plus the Domain Lead of each affected domain (research, operations, compliance) review the PR. On merge, Admin opens a propagation log entry in the Leadership repo (`cadence/propagation-log.md`) and opens implementation PRs in the Domain repo for the three affected domains. Each Domain Lead merges their domain's implementation PR independently.
+The researcher drafts a CDR using `standards/templates/cdr-template.md` and opens a PR in Foundation. The PR triggers Foundation's `structure-check` (asserts the CDR follows `cdr-template.md`'s structure) and `checklist-complete` (asserts the Approval checklist is filled in) CI checks. One Leader plus the Domain Lead of each affected domain (research, operations, compliance) review the PR. On merge, Admin opens a propagation log entry in the Leadership repo (`cadence/propagation-log.md`) and opens implementation PRs in the Domain repo for the three affected domains. Each Domain Lead merges their domain's implementation PR independently.
 
 The anonymisation standard is now in `standards/`, referenced by domain-level ADRs, and enforced by the banned-string check.
 
