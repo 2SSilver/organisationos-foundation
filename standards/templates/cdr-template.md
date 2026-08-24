@@ -45,7 +45,7 @@ What is being decided. One paragraph maximum.
 - Domain Lead, Domain 1:
 - Domain Lead, Domain 2:
 - Leader:
-- Admin: (records propagation actions in ../../../organisationos-leadership/cadence/propagation-log.md)
+- Admin: (records propagation actions in ../organisationos-leadership/cadence/propagation-log.md)
 
 ## Propagation actions (Admin)
 
