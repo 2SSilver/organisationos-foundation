@@ -2,8 +2,9 @@
 
 This is the announcement surface for merged substrate changes — glossary, standard, template, or interface clarifications that do not rise to the level of a CDR. Each merged change gets one dated, one-line entry, added as part of the same PR that makes the change.
 
-`find-relevant-knowledge` surfaces the most recent entries here (see spec §11.6 "Propagation & freshness" and §15.4), so an operator whose session started before a merge still sees what changed.
+`find-relevant-knowledge` surfaces the most recent entries here, so an operator whose session started before a merge still sees what changed.
 
 ## Entries
 
+- 2026-08-26 — `docs/` added (concepts, loading model, setup-org, setup-person) and the README rebuilt as a landing page with a banner and diagrams. Every spec-section reference is gone: what an adopter needs on Day 0 is now inlined, including the branch-protection settings, and setup no longer depends on a specification that does not ship with these repos. Corrected what the harness claims about session loading — a cross-repo `@import` of a sibling's `CLAUDE.md` never inlines it, verified by test, so reach and loading are described separately and the rules that must always hold are restated locally rather than referenced. Added the `monthly-dri.yml` reusable so the monthly maintenance issue actually opens, and removed Foundation's duplicate of that issue template. `format-gate` now allows `.lycheeignore`. Closes AR-01, AR-04 and AR-07 on the Foundation side. (@2SSilver)
 - 2026-01-15 — `glossary.md`: clarified "interface" to exclude domain-local ADRs (@placeholder-admin)

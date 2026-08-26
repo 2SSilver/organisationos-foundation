@@ -4,7 +4,7 @@ Terms used across two or more domains in this organisation. Domain-specific term
 
 ## OrganisationOS terms
 
-- **Admin** — role responsible for the operating contract (Steward + Engineer functions). See `CLAUDE.md` and v3.1 §5.
+- **Admin** — role responsible for the operating contract (Steward + Engineer functions). See `CLAUDE.md` and `docs/concepts.md` → The five roles.
 - **Back-flow PR** — Pattern A only. A PR carrying anonymised content from an external-work repo back into the harness. Labelled `back-flow`; requires two reviewers.
 - **CDR** — Cross-Domain Decision Record. Lives in Foundation's `cross-domain-decisions/`. Distinguished from ADRs (single-domain decisions).
 - **Domain Lead** — owns a domain's quality bar.

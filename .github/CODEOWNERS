@@ -1,12 +1,13 @@
 # CODEOWNERS — Foundation repo
 # Adopter customisation: replace every placeholder handle below with real GitHub handles.
 #
-# Rules enforced (per spec §10 Approval / §11.2 / §12 — one canonical rule):
+# Rules enforced (the CDR process's Approval checklist, Leadership Forum
+# cadence, and branch protection/CODEOWNERS — one canonical rule):
 # 1. No single human may satisfy two required-reviewer slots on the same PR.
 #    Combined with branch protection's "proposer cannot approve" rule.
 # 2. Sensitive substrate paths require Admin + Leader (two-approver).
 # 3. Canonical reviewer-set rule: Leader + Domain Lead of each affected domain
-#    (+ Product Owner and Admin where the §10 CDR template lists them).
+#    (+ Product Owner and Admin where the CDR template lists them).
 #    CODEOWNERS cannot express "affected domains" or "PO of the affected
 #    domain", so it lists the fallback superset below; the PR-template
 #    Approval checklist records the actual affected set and PO sign-off,
@@ -17,7 +18,7 @@
 *                                @placeholder-admin @placeholder-leader
 
 # Two-approver substrate (harness-level changes).
-# Deadlock fallback (spec §5 "Small-org fallback to the multi-hat rule"):
+# Deadlock fallback ("Small-org fallback to the multi-hat rule"):
 # when the Admin authors a /standards/ PR and cannot self-approve the Admin
 # slot, a Domain Lead countersigns in Admin's place.
 /standards/                      @placeholder-admin @placeholder-leader
@@ -34,11 +35,11 @@
 # Cross-domain coupling: Leader + all Domain Leads + Admin
 # (Adopters narrow to the actually-affected Domain Leads per-PR via the
 #  PR-template Approval checklist; this list is the CODEOWNERS fallback
-#  superset. Admin is included here because §10's CDR template asserts an
+#  superset. Admin is included here because the CDR template asserts an
 #  Admin sign-off — CODEOWNERS previously silently dropped it. Product
 #  Owners are NOT listed here: CODEOWNERS cannot express "PO of the
 #  affected domain" — PO sign-off is recorded via the PR-template Approval
-#  checklist instead, per §10/§11.2/§12.)
+#  checklist instead.)
 /interfaces/                     @placeholder-admin @placeholder-leader @placeholder-domain-1-lead @placeholder-domain-2-lead @placeholder-domain-3-lead @placeholder-domain-4-lead
 /cross-domain-decisions/         @placeholder-admin @placeholder-leader @placeholder-domain-1-lead @placeholder-domain-2-lead @placeholder-domain-3-lead @placeholder-domain-4-lead
 /architectural-decisions/        @placeholder-admin @placeholder-leader @placeholder-domain-1-lead @placeholder-domain-2-lead @placeholder-domain-3-lead @placeholder-domain-4-lead

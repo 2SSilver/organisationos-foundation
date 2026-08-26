@@ -1,30 +1,31 @@
 name: back-flow-rules
 
-# Pattern A only — enforces the back-flow operational defences from v3.1 §8:
+# Pattern A only — enforces the back-flow operational defences:
 # the 500-line cap and 24-hour cool-off apply to every PR labelled
 # `back-flow`, human- or agent-initiated alike.
 #
-# Agent-initiated back-flow ban (v3.1 §8, unchanged by v3.2). The ban is a
+# Agent-initiated back-flow ban (unchanged by v3.2). The ban is a
 # session-mount-state condition, not an authorship-within-session claim: a
 # commit made while --add-dir included a non-harness path fails CI. Caught by
 # a session-id field in the PR template plus a hook that tags commits made
-# under that condition (§8) — not by anything in this workflow. TODO: no such
+# under that condition — not by anything in this workflow. TODO: no such
 # hook ships in these templates yet. Until it does, the agent-initiated ban
 # is enforced by the session-id field plus reviewer judgement during the
-# two-reviewer back-flow review (§8), not by an automated CI check here.
+# two-reviewer back-flow review, not by an automated CI check here.
 #
-# v3.2 §8/§16 carve-out: a human-initiated, `back-flow`-labelled PR carrying
-# only the Markdown source of a client-facing deliverable is permitted
-# through the same two gates below. This workflow does not add a separate
-# format check for the carve-out — a blanket Markdown-only check would also
-# apply to every other `back-flow` PR, and v3.1 §8 already anticipates a
-# back-flow PR carrying non-Markdown formats FORMATS.md permits (e.g. a PDF
-# anonymised report). The source-only expectation for the carve-out is
-# confirmed by the two reviewers during back-flow review, not by CI.
+# The v3.2 source-only carve-out: a human-initiated, `back-flow`-labelled PR
+# carrying only the Markdown source of a client-facing deliverable is
+# permitted through the same two gates below. This workflow does not add a
+# separate format check for the carve-out — a blanket Markdown-only check
+# would also apply to every other `back-flow` PR, and the back-flow
+# operational defences already anticipate a back-flow PR carrying
+# non-Markdown formats FORMATS.md permits (e.g. a PDF anonymised report).
+# The source-only expectation for the carve-out is confirmed by the two
+# reviewers during back-flow review, not by CI.
 # Applies to PRs labelled `back-flow`.
 #
 # `knowledge-paths` input: the path tripwire's folder list, configurable for
-# two reasons. (1) Spec §8 says the back-flow ritual does not apply to
+# two reasons. (1) The back-flow operational defences do not apply to
 # Pattern B adopters (harness-as-primary-workspace) — Pattern B has an exit
 # from every other Pattern A mechanism but had none from this tripwire, since
 # the folder list was hardcoded. Passing an empty string here gives Pattern B
@@ -32,10 +33,10 @@ name: back-flow-rules
 # cap and the 24h cool-off are unaffected — they still apply to anything a
 # reviewer labels `back-flow` by hand). (2) No `methods/` or `prompts/`
 # directory is pre-created — `domain-1/` ships `_archive _drafts adrs
-# CLAUDE.md glossary.md README.md references.md` — and adopters following
-# spec §7's three named patterns name their own folders (`topic-x/`;
-# `strategy/`+`roadmap/`; `engineering/`+`analysis/`), which this list never
-# matched. The names themselves are canonical, not accidental: Domain's
+# CLAUDE.md glossary.md README.md references.md` — and adopters using one of
+# the three named domain-substructure patterns (`topic-x/`;
+# `strategy/`+`roadmap/`; `engineering/`+`analysis/`) name their own folders,
+# which this list never matched. The names themselves are canonical, not accidental: Domain's
 # README documents `domain-N/methods/` and `.github/CODEOWNERS` routes both
 # folders, so the default stays as it is — a Pattern A adopter overrides it
 # rather than the default being wrong.
@@ -116,7 +117,7 @@ jobs:
           set -e
           added=$(git diff --shortstat "origin/${{ github.base_ref }}...HEAD" | grep -oE '[0-9]+ insertion' | grep -oE '[0-9]+' || echo 0)
           if [ "$added" -gt 500 ]; then
-            echo "::error::Back-flow PR adds $added lines (cap: 500). Split into multiple PRs, each reviewed independently. See v3.1 §8."
+            echo "::error::Back-flow PR adds $added lines (cap: 500). Split into multiple PRs, each reviewed independently — one of the back-flow operational defences."
             exit 1
           fi
       - name: Enforce 24-hour cool-off
@@ -128,7 +129,7 @@ jobs:
           now_ts=$(date +%s)
           age=$((now_ts - created_ts))
           if [ "$age" -lt 86400 ]; then
-            echo "::error::Back-flow PR cannot be merged within 24 hours of opening. Wait until $(date -d "@$((created_ts + 86400))"). See v3.1 §8."
+            echo "::error::Back-flow PR cannot be merged within 24 hours of opening. Wait until $(date -d "@$((created_ts + 86400))"). This is one of the back-flow operational defences."
             # Note: this prevents merge by failing required check; reviewers can still review during cool-off.
             exit 1
           fi
@@ -138,11 +139,11 @@ jobs:
         with:
           script: |
             const body = [
-              'This `back-flow` PR was blocked by one of the operational defences (v3.1 §8):',
+              'This `back-flow` PR was blocked by one of the operational defences:',
               '- Back-flow PRs add ≤500 net new lines.',
               '- Back-flow PRs cannot be merged within 24h of opening (Domain Lead reading time).',
               '',
-              'The agent-initiated back-flow ban (§8) and the v3.2 human-initiated, source-only carve-out are not checked by this workflow — they rely on the session-id PR-template field and the two-reviewer back-flow review.',
+              'The agent-initiated back-flow ban and the v3.2 human-initiated, source-only carve-out are not checked by this workflow — they rely on the session-id PR-template field and the two-reviewer back-flow review.',
               '',
               'If the change is genuinely large, split it. If it is genuinely urgent, raise it with the Admin.'
             ].join('\n');

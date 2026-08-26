@@ -28,4 +28,4 @@ When `Retention` expires, the row is moved to `_archive/references-archived.md` 
 - `references/<topic>.md` — one file per subject area (e.g. `references/vendor-contracts.md`, `references/dashboards.md`)
 - One file per reference under `references/`, named for the artefact
 
-This is an option for domains with heavy external-artefact traffic, not a default — small domains keep the single-file form above. See v3.1 §16.
+This is an option for domains with heavy external-artefact traffic, not a default — small domains keep the single-file form above.

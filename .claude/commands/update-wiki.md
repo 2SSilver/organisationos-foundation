@@ -33,7 +33,7 @@ Review this session and identify, saving drafts to `<current-domain>/_drafts/`:
 
 ## Low-ceremony merge path
 
-This ritual is mandated every session, so merging a draft has to be cheap or the ritual gets skipped. Once the operator opens a PR for a `_drafts/` entry under a small size cap (e.g. <100 changed lines, wiki/method/prompt drafts only — not CDRs or ADRs), that PR uses the §12 **notification-only** tier: branch protection has `require-code-owner-review` off on `domain-N/_drafts/`, so it merges on proposer + green CI without waiting on a blocking review. The Domain Lead is still tagged via CODEOWNERS and can flag it after the fact. Drafts over the size cap, or CDR/ADR drafts, go through the normal single-reviewer or two-approver tier as their target path requires.
+This ritual is mandated every session, so merging a draft has to be cheap or the ritual gets skipped. Once the operator opens a PR for a `_drafts/` entry under a small size cap (e.g. <100 changed lines, wiki/method/prompt drafts only — not CDRs or ADRs), that PR uses the **notification-only** tier from branch protection (docs/setup-org.md → Step 7): branch protection has `require-code-owner-review` off on `domain-N/_drafts/`, so it merges on proposer + green CI without waiting on a blocking review. The Domain Lead is still tagged via CODEOWNERS and can flag it after the fact. Drafts over the size cap, or CDR/ADR drafts, go through the normal single-reviewer or two-approver tier as their target path requires.
 
 ## After drafting
 

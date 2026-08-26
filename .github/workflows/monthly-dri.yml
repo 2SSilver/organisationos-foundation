@@ -1,0 +1,69 @@
+name: monthly-dri (reusable)
+
+# Opens the Admin's monthly maintenance issue. The Leadership repo owns the
+# cadence and the checklist: its caller carries the cron and passes its own
+# .github/ISSUE_TEMPLATE/monthly-dri.md as body-file. This reusable only does
+# the opening, so the mechanism lives once and is versioned with the rest of
+# Foundation's CI. workflow_dispatch is here so the mechanism can be exercised
+# from the Actions tab without waiting for the 1st of the month.
+#
+# Idempotent per month: a re-run that finds this month's issue already open
+# (or closed) exits 0 without creating a duplicate.
+
+on:
+  workflow_call:
+    inputs:
+      assignee:
+        type: string
+        required: false
+        default: ''
+        description: 'GitHub handle (no @) to assign the issue to. Empty leaves it unassigned.'
+      body-file:
+        type: string
+        required: true
+        description: 'Path, in the caller repo checkout, to the issue-template Markdown whose body becomes the issue body.'
+  workflow_dispatch:
+    inputs:
+      assignee:
+        type: string
+        required: false
+        default: ''
+        description: 'GitHub handle (no @) to assign the issue to.'
+      body-file:
+        type: string
+        required: true
+        default: '.github/ISSUE_TEMPLATE/monthly-dri.md'
+        description: 'Issue-template Markdown to use as the body.'
+
+jobs:
+  open:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Open this month's maintenance issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          ASSIGNEE: ${{ inputs.assignee }}
+          BODY_FILE: ${{ inputs.body-file }}
+        run: |
+          set -e
+          if [ ! -f "$BODY_FILE" ]; then
+            echo "::error::body-file '$BODY_FILE' not found in this checkout. Pass the path to the monthly-dri issue template (Leadership: .github/ISSUE_TEMPLATE/monthly-dri.md)."
+            exit 1
+          fi
+          month=$(date -u +%Y-%m)
+          title="Monthly maintenance check — $month"
+          if gh issue list --state all --search "in:title \"$title\"" --json title --jq '.[].title' | grep -Fxq "$title"; then
+            echo "Issue '$title' already exists — nothing to do."
+            exit 0
+          fi
+          # Drop the issue-template frontmatter (first --- ... --- block) and stamp the month.
+          body=$(awk 'BEGIN{fm=0} NR==1 && /^---$/ {fm=1; next} fm==1 && /^---$/ {fm=0; next} fm==0 {print}' "$BODY_FILE" | sed "s/YYYY-MM/$month/g")
+          args=(--title "$title" --body "$body" --label drift --label harness)
+          if [ -n "$ASSIGNEE" ]; then args+=(--assignee "$ASSIGNEE"); fi
+          url=$(gh issue create "${args[@]}")
+          echo "Opened $url"

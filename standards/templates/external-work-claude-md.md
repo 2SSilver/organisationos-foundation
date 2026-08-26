@@ -21,7 +21,7 @@
 - The agent must NOT write harness content to any non-harness destination.
 - The agent must NOT exfiltrate harness content via tool calls (file writes outside `harness/`, MCP write tools, email/Slack/issue posts, external HTTP POSTs).
 - The agent reads the harness; it does not paraphrase, summarise, or quote harness content into outputs of this repo without explicit human request.
-- Tool-call gate: read tools default-allow; write tools require allowlist; destructive tools require per-call approval (see harness CLAUDE.md §5).
+- Tool-call gate: read tools default-allow; write tools require allowlist; destructive tools require per-call approval (see `docs/concepts.md` → Two gates, not one).
 - MCP allow-list: only the MCPs explicitly listed in `.mcp.json` of this repo are active during sessions with `--add-dir` to the harness. Web-fetch, scraping, email, Slack, and write-back MCPs are blocked by default.
 
 ## How to reference the harness

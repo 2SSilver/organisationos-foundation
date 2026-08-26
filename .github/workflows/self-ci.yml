@@ -3,11 +3,11 @@ name: self-ci
 # Foundation's self-caller (MR-04 fix). Every workflow Foundation ships is a
 # `workflow_call` reusable with no caller of its own — without this file, Foundation
 # PRs run zero CI even though Domain and Leadership run the full suite against
-# Foundation's reusables. This is the delivery mechanism for spec §13.1's promise that
-# "Foundation's own workflows run directly against Foundation PRs."
+# Foundation's reusables. This is the delivery mechanism for the reusable-workflow
+# pattern's promise that "Foundation's own workflows run directly against Foundation PRs."
 #
 # Foundation calls its own reusables by LOCAL path (`./.github/workflows/<name>.yml`),
-# not the cross-repo pinned-tag form (`@v1`, spec §13.1) Domain/Leadership callers use —
+# not the cross-repo pinned-tag form (`@v1`) Domain/Leadership callers use —
 # the reusable lives in this same repo, so there is no cross-repo version to pin.
 #
 # Included — every reusable below exposes only `workflow_call` (no schedule/dispatch
@@ -26,6 +26,7 @@ name: self-ci
 # adding them here would just duplicate that trigger on every PR:
 #   - draft-staleness.yml (weekly schedule)
 #   - propagation-sla.yml (weekly schedule)
+#   - monthly-dri.yml (workflow_dispatch here; the cron lives in Leadership's caller)
 #
 # Task 4 adds integrity jobs directly in this file (not as standalone reusable workflow
 # files): banned-patterns-validate, codeowners-lint, checklist-complete, agent-mirror-sync.
@@ -166,7 +167,7 @@ jobs:
           exit $fail
 
   codeowners-lint:
-    # MR-06: branch protection (spec §12) only matters if CODEOWNERS actually names >=1 owner
+    # MR-06: branch protection (docs/setup-org.md → Step 7) only matters if CODEOWNERS actually names >=1 owner
     # for every substrate path it is meant to gate. This catches the case where protection is
     # correctly configured but CODEOWNERS itself has a gap. The '*' default fallback does not
     # count as a dedicated owner for these paths.
@@ -179,7 +180,8 @@ jobs:
           python3 <<'PY'
           import sys
 
-          # Substrate paths from spec §3.1 / §12's branch-protection tier table. Update this
+          # Substrate paths from the three-repo model (docs/concepts.md) and the
+          # branch-protection tier table (docs/setup-org.md → Step 7). Update this
           # list if Foundation's top-level substrate structure changes.
           SUBSTRATE_PATHS = [
               "standards", "standards/templates", "interfaces", "cross-domain-decisions",
@@ -220,7 +222,7 @@ jobs:
   checklist-complete:
     # MR-06: produces the checklist-completeness check the PR templates promise.
     # Cross-domain/substrate artefacts (CDRs, interfaces, NFRs, architectural decisions) all
-    # live in Foundation (spec §11.2), so this is the one place the check needs to run.
+    # live in Foundation, so this is the one place the check needs to run.
     # All four of those categories must appear in the substrate regex below — omitting one
     # is a silent false pass, not a smaller check.
     #
@@ -254,7 +256,7 @@ jobs:
           files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
           printf 'changed files:\n%s\n' "$files"
           cross=no
-          # Substrate artefacts that are cross-domain by definition (spec 11.2).
+          # Substrate artefacts that are cross-domain by definition.
           if printf '%s\n' "$files" | grep -qE '^(cross-domain-decisions|interfaces|architectural-decisions|nfrs)/'; then
             cross=yes
           fi
@@ -275,7 +277,7 @@ jobs:
           fi
           section=$(printf '%s\n' "$PR_BODY" | awk '/^## Approval checklist/{flag=1; next} /^## /{flag=0} flag')
           if [ -z "$section" ]; then
-            echo "::error::This PR changes cross-domain substrate but its body has no '## Approval checklist' section. Use the PR template (see spec §12)."
+            echo "::error::This PR changes cross-domain substrate but its body has no '## Approval checklist' section. Use the PR template."
             exit 1
           fi
           unchecked=$(printf '%s\n' "$section" | grep -c '^- \[ \]' || true)
@@ -288,8 +290,8 @@ jobs:
           exit 0
 
   agent-mirror-sync:
-    # MR-12: .github/agents/ is the Copilot-CLI-native location (spec §14); .claude/agents/ is
-    # a thin mirror Claude Code reads until it natively supports .github/agents/. The two must
+    # MR-12: .github/agents/ is the Copilot-CLI-native location; .claude/agents/ is
+    # a thin mirror Claude Code reads (see .claude/agents/README.md). The two must
     # stay identical or the vendor surfaces silently drift apart.
     runs-on: ubuntu-latest
     steps:

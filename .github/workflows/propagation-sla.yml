@@ -19,7 +19,7 @@ jobs:
         id: scan
         run: |
           set -e
-          # Path is relative to the caller-repo checkout (Leadership); this is a Category-A reusable (§13.3).
+          # Path is relative to the caller-repo checkout (Leadership); this is a Category-A reusable workflow (Foundation .github/workflows/, called at @v1).
           propagation_log="cadence/propagation-log.md"
           if [ ! -f "$propagation_log" ]; then
             echo "No propagation log."
@@ -27,7 +27,7 @@ jobs:
             exit 0
           fi
           # Look for unchecked propagation items older than 30 days.
-          # Format expected (per v3.1 §10): lines containing "- [ ] ... (Deadline: YYYY-MM-DD)"
+          # Format expected: lines containing "- [ ] ... (Deadline: YYYY-MM-DD)"
           today=$(date +%s)
           stale=""
           while IFS= read -r line; do
@@ -60,7 +60,7 @@ jobs:
             const body = [
               '# Propagation SLA breach',
               '',
-              'The following propagation-log items have propagation deadlines >30 days past due. Per v3.1 §10, the Admin escalates or re-assigns these at the next Leadership Forum.',
+              'The following propagation-log items have propagation deadlines >30 days past due. The Admin escalates or re-assigns these at the next Leadership Forum.',
               '',
               '```',
               list,

@@ -23,7 +23,7 @@ Then output a dated 30-day plan with these milestones. Save the output to `<doma
   `../organisationos-foundation/standards/templates/onboarding/settings.local.json.example-<role>`
   to your working repo's `.claude/settings.local.json` (gitignored).
   Install the workflow plugin per the org's `.claude/settings.json`
-  pin (see §15).
+  pin.
 - **Day 3:** Install the pre-commit banned-string hook:
 
   ```bash
@@ -40,7 +40,7 @@ Pair with an existing Team Member (for TMs/POs) or Domain Lead (for DLs) on one 
 
 ## Week 3 — own first draft PR (deliberately draft)
 
-Open a draft PR for a small change in the joiner's domain. Use the PR as a thinking space (v3.1 §12). Do not seek review until ready.
+Open a draft PR for a small change in the joiner's domain. Use the PR as a thinking space. Do not seek review until ready.
 
 ## Week 4 — own first merged PR
 

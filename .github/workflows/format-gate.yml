@@ -65,9 +65,9 @@ jobs:
             [ -f "$f" ] || continue
             ext="${f##*.}"
             base="${f##*/}"
-            # Allow files without extensions (e.g. CODEOWNERS, .gitignore handled by name)
+            # Allow files without extensions (e.g. CODEOWNERS, .gitignore, .lycheeignore handled by name)
             case "$base" in
-              CODEOWNERS|.gitignore|.gitkeep) continue ;;
+              CODEOWNERS|.gitignore|.gitkeep|.lycheeignore) continue ;;
             esac
             # Hidden config files
             case "$f" in .github/hooks/*) continue ;; esac
