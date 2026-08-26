@@ -75,7 +75,7 @@ jobs:
             const body = [
               '# Stale drafts report',
               '',
-              `Drafts in \`_drafts/\` folders older than 14 days. Per v3.1 §14, each draft has three end-states: **merged**, **retired** (moved to \`_archive/\`), or **extended** (Domain Lead approves another 14 days).`,
+              `Drafts in \`_drafts/\` folders older than 14 days. Each draft has three end-states: **merged**, **retired** (moved to \`_archive/\`), or **extended** (Domain Lead approves another 14 days).`,
               '',
               '## Drafts',
               '```',

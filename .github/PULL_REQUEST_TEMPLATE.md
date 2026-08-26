@@ -23,7 +23,7 @@ None | <list, with one line each>. If cross-domain, has a CDR been raised? (See 
 
 ## Approval checklist (cross-domain / substrate PRs only)
 
-Canonical rule (spec §10/§11.2/§12): the Leader + the Domain Lead of each
+Canonical rule (the CDR process, Leadership Forum cadence, and branch protection/CODEOWNERS all agree): the Leader + the Domain Lead of each
 affected domain (+ Product Owner and Admin where the CDR template lists
 them). CODEOWNERS lists the fallback superset; this checklist records the
 actual affected set.

@@ -15,7 +15,7 @@ jobs:
           for f in $(find . -name CLAUDE.md -not -path '*/node_modules/*' -not -path '*/_archive/*'); do
             lines=$(wc -l < "$f")
             if [ "$lines" -gt 300 ]; then
-              echo "::error file=$f::CLAUDE.md is $lines lines (cap: 300). Multi-step procedures move into skills or scoped rule files, not the main CLAUDE.md. See v3.1 §6."
+              echo "::error file=$f::CLAUDE.md is $lines lines (cap: 300). Multi-step procedures move into skills or scoped rule files, not the main CLAUDE.md."
               fail=1
             fi
           done

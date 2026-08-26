@@ -33,7 +33,7 @@ I commit unilaterally only to the Leadership repo's `steward/` folder. Everywher
 
 - Leader: @<handle> — co-signs harness changes; gates publish on cross-domain decisions
 - Each Domain Lead: @<handles> — propagation tracking
-- (At scale) per-domain stewards: @<handles> — distributed stewardship per v3.1 §5
+- (At scale) per-domain stewards: @<handles> — distributed stewardship (`docs/concepts.md` → The five roles → Admin at scale)
 
 ## My agent preferences
 

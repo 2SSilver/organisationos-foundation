@@ -9,7 +9,7 @@ The `banned-patterns.yml` substring/regex check catches the careless human; it d
 | **Numerical identifiers** | An unusual contract value, headcount, KPI baseline | Back-flow review with explicit numerical-anomaly check |
 | **Co-occurrence identifiers** | Two anodyne facts that combine to identify | `context-near` directive in `banned-patterns.yml` |
 | **Date identifiers** | A date correlated to a known public event for the client | Back-flow review (Domain Lead recognises the date) |
-| **Near-misses** | Partial names, initial-cap codenames, CamelCase variants not yet on the list | Periodic banned-pattern review at monthly DRI (§13); near-miss detection in `reviewer.md` agent |
+| **Near-misses** | Partial names, initial-cap codenames, CamelCase variants not yet on the list | Periodic banned-pattern review at the monthly maintenance issue (docs/setup-org.md → Step 8); near-miss detection in `reviewer.md` agent |
 
 ## When to add a category here
 

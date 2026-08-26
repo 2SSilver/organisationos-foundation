@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/mcp",
   "mcpServers": {},
   "_notes": [
-    "Per v3.1 §15: .mcp.json is committed and Admin-reviewed (same two-approver rule as .claude/settings.json).",
-    "Each MCP server entry is reviewed against §8 confidentiality boundary: what data leaves the org boundary when this MCP is in scope?",
+    ".mcp.json is committed and Admin-reviewed (same two-approver rule as .claude/settings.json).",
+    "Each MCP server entry is reviewed against the external-work boundary (Foundation CLAUDE.md → Confidentiality): what data leaves the org boundary when this MCP is in scope?",
     "Localhost-bound MCP or worker services get a firewall treatment: block external interface bindings; restrict to loopback only.",
     "External-work sessions (--add-dir to harness) use a restricted MCP allow-list — web-fetch, scraping, write-back, email/Slack MCPs are blocked by default.",
     "Remove _notes before committing in a real adoption."

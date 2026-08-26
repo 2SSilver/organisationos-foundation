@@ -14,7 +14,7 @@ Read-only synthesis across domains is permitted and requires no CDR (see Foundat
 ## What does NOT belong here
 
 - **Not a domain-owned folder.** A synthesis about domain-2 and domain-3 does not live in either domain's tree — that would hide it from the other subject domain and imply single ownership of a joint read.
-- **Not Leadership's strategy surface.** `syntheses/` is a substrate folder for cross-domain *reads*; organisation-level priorities, OKRs, and position papers live in the Leadership repo's `strategy/` (see §3.2). A synthesis may inform a strategy decision, but the synthesis itself stays here.
+- **Not Leadership's strategy surface.** `syntheses/` is a substrate folder for cross-domain *reads*; organisation-level priorities, OKRs, and position papers live in the Leadership repo's `strategy/` (see `docs/concepts.md` → Why three repos). A synthesis may inform a strategy decision, but the synthesis itself stays here.
 - **Not a CDR.** If a synthesis's conclusion leads to a decision that creates a cross-domain dependency — a shared method, a joint offering, a write that binds two domains — that decision is a CDR at `../cross-domain-decisions/`, not an edit to the synthesis file.
 
 ## How to add a synthesis

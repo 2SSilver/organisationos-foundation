@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Surface domain-boundary disagreements before they encode into folders. "Bounded contexts that are not bounded will produce drift no harness can prevent" (v3.1 §19).
+Surface domain-boundary disagreements before they encode into folders. "Bounded contexts that are not bounded will produce drift no harness can prevent."
 
 ## Attendees
 
