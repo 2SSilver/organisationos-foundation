@@ -12,7 +12,7 @@ If nobody has set the organisation up yet, that comes first: [Setting up Organis
 | Leader | All three | Leadership is your working surface; you review Domain PRs and Foundation decisions |
 | Admin | All three (plus every per-domain repo if the organisation split them) | You maintain all of it |
 
-Clone them as **siblings under one folder**, with these exact names. Each repo's `CLAUDE.md` points at `../organisationos-foundation/CLAUDE.md`, and every cross-repo path in the harness is written from that layout, so a different one breaks them silently. The pointer does not itself load Foundation's rules — see [How a session loads the three repos](loading-model.md).
+Clone them as **siblings under one folder**, with these exact names. Each repo's `CLAUDE.md` points at `../organisationos-foundation/CLAUDE.md`, and every cross-repo path in the harness is written from that layout, so a different one breaks them silently. The pointer does not itself load Foundation's rules. See [How a session loads the three repos](loading-model.md).
 
 ```bash
 ORG=your-github-org
@@ -71,7 +71,7 @@ A wrong install is silent, so test it before you trust it. Start Claude in the f
 
 The answer should be that built outputs are referenced from a domain's `references.md` rather than committed, per `FORMATS.md`. That rule lives only in Foundation, so a correct answer proves this session can reach Foundation and read it.
 
-It does not prove Foundation's rules are already in context. Nothing puts them there automatically, and the `@import` line near the top of your repo's `CLAUDE.md` is a pointer rather than a loader — see [How a session loads the three repos](loading-model.md). What the test does prove is that the reach is configured, which is the part people get wrong.
+It does not prove Foundation's rules are already in context. Nothing puts them there automatically, and the `@import` line near the top of your repo's `CLAUDE.md` is a pointer rather than a loader. See [How a session loads the three repos](loading-model.md). What the test does prove is that the reach is configured, which is the part people get wrong.
 
 Two more checks while you are there:
 

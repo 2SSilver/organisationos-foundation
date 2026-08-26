@@ -22,7 +22,7 @@ flowchart TB
 | **Leadership** | Strategy, Forum cadence, propagation log, drift log | [organisationos-leadership](https://github.com/<adopter-org>/organisationos-leadership) |
 | **Domain** | Per-domain working content | [organisationos-domain](https://github.com/<adopter-org>/organisationos-domain) |
 
-On disk the three are siblings under one parent folder. The layout is load-bearing: every cross-repo path in the harness is written `../organisationos-foundation/…`, and the settings that give a session reach into Foundation name that exact path. Nest them inside another project or Git repository and those paths break, silently — see [docs/loading-model.md](docs/loading-model.md).
+On disk the three are siblings under one parent folder. The layout is load-bearing: every cross-repo path in the harness is written `../organisationos-foundation/…`, and the settings that give a session reach into Foundation name that exact path. Nest them inside another project or Git repository and those paths break, silently. See [docs/loading-model.md](docs/loading-model.md).
 
 ```text
 ~/projects/<adopter-org>/
