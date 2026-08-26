@@ -41,8 +41,13 @@ The templates carry the literal string `<adopter-org>` wherever they need to nam
 ```bash
 cd ~/projects/$ORG
 for r in foundation leadership domain; do
-  grep -rl '<adopter-org>' "organisationos-$r" --exclude-dir=.git | xargs perl -pi -e "s/<adopter-org>/$ORG/g"
-  echo "$r: $(grep -rl '<adopter-org>' organisationos-$r --exclude-dir=.git | wc -l) files still carry the placeholder (expect 0)"
+  files=$(grep -rl '<adopter-org>' "organisationos-$r" --exclude-dir=.git || true)
+  if [ -n "$files" ]; then
+    printf '%s\n' "$files" | while IFS= read -r f; do
+      perl -pi -e "s/<adopter-org>/$ORG/g" "$f"
+    done
+  fi
+  echo "$r: $(grep -rl '<adopter-org>' "organisationos-$r" --exclude-dir=.git | wc -l) files still carry the placeholder (expect 0)"
 done
 ```
 
@@ -78,7 +83,7 @@ Two workflows depend on labels existing: `back-flow-rules` (the `back-flow` labe
 
 CODEOWNERS says who *should* review. Branch protection is what turns that into a gate — GitHub satisfies a CODEOWNERS rule with one approval from any listed owner unless protection says otherwise. Apply these settings to `main` in each repo.
 
-| Repo | Required approvals | Require review from Code Owners | Dismiss stale approvals | Require branch up to date |
+| Repo | Required approvals | Require review from Code Owners | Dismiss stale approvals | Require branch up to date (see note) |
 | --- | --- | --- | --- | --- |
 | Foundation | 2 | on | on | on |
 | Leadership | 1 | on | on | on |
@@ -105,6 +110,8 @@ protect organisationos-foundation 2
 protect organisationos-leadership 1
 protect organisationos-domain 1
 ```
+
+**A note on `required_status_checks`.** The payload above sets `contexts: []` — no named check is required to merge. That is deliberate: check names differ per repo and change as workflows are added, so hard-coding them here would rot within a release. It has one consequence worth knowing: GitHub applies the `strict` flag — "require branches to be up to date" — only when at least one check is actually required, so as written that flag is stored but inert. If you want CI to gate merges, and you probably do, add your repo's check names to `contexts` once the workflows have run at least once and GitHub knows their names. Until you do, a red build does not block a merge.
 
 **What this does and does not enforce.** Foundation's two-approver floor covers every substrate path — standards, interfaces, CDRs, NFRs, workflows, `.claude/`. Inside the Domain repo, the harness distinguishes a *notification-only* tier (a Domain Lead sees `domain-N/glossary.md` and `_drafts/` changes but does not block them) from a *single-reviewer* tier (everything else in the domain). GitHub branch protection is per-branch, not per-path, so it cannot express that distinction natively. The Domain repo therefore runs at the single-reviewer floor, and the notification-only tier is a convention: Domain Leads approve glossary and draft PRs promptly rather than reading them closely. The CODEOWNERS comments say which paths are which. If your organisation needs the tiers enforced, GitHub rulesets with path conditions are the place to look; the harness does not ship them.
 

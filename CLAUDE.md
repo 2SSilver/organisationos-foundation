@@ -11,9 +11,9 @@
 
 ## Multi-repo context
 
-This is the **Foundation repo** in a three-repo OrganisationOS set. Its rules apply to itself AND to any Leadership or Domain repo that loads it via `additionalDirectories` + `@import`.
+This is the **Foundation repo** in a three-repo OrganisationOS set. Its rules govern this repo directly, and they are the substrate the Leadership and Domain repos work against — but they reach a session in those repos only when that session reads them, not automatically. See `docs/loading-model.md`.
 
-Domain and Leadership repos reference this file directly via `@../organisationos-foundation/CLAUDE.md`. Do not duplicate substrate rules in Domain or Leadership CLAUDE.md — the @import brings this file's rules into context automatically.
+Domain and Leadership carry `@../organisationos-foundation/CLAUDE.md` near the top of their own `CLAUDE.md`. That line is a pointer, not a loader: a cross-repo import does not inline its target. Those repos therefore restate the rules that must hold in every session — the confidentiality boundary above all — and read the rest of this file on demand. Do not add a rule here and assume it is active organisation-wide; if it must always hold, it also belongs in their files.
 
 When working in this repo: changes here propagate to all human↔agent sessions across the organisation. Treat every PR to this repo as a substrate change (two-approver minimum for `/standards/`, `/.github/`, `/.claude/`).
 
@@ -88,12 +88,13 @@ When Claude is launched in this repo, the chain is:
 1. This file
 2. `CLAUDE.local.md` if present (personal overlay — gitignored)
 
-When Claude is launched in a sibling Leadership or Domain clone that lists this repo in `additionalDirectories`, the chain is:
+When Claude is launched in a sibling Leadership or Domain clone that lists this repo under `additionalDirectories`, the chain is:
 
 0. **`pull-check`** on each cloned repo present in the workspace (see above) — run once, before step 1.
 1. That repo's `CLAUDE.md` (loaded first, sets repo-specific context)
-2. This file (loaded via `@../organisationos-foundation/CLAUDE.md` in that repo's CLAUDE.md)
-3. That repo's `CLAUDE.local.md` if present (personal overlay — gitignored)
+2. That repo's `CLAUDE.local.md` if present (personal overlay — gitignored)
+
+This file is **not** in that chain. `additionalDirectories` grants filesystem reach, and the `@import` line is a pointer; neither puts this file in context. It is read on demand — when the operator asks, or when `find-relevant-knowledge` retrieves it. That is precisely why the rules which must hold in every session are restated in Domain's and Leadership's own `CLAUDE.md` rather than referenced from here. See `docs/loading-model.md`.
 
 Directory location is identity. A session launched in the Domain repo inside a domain folder picks up that domain's CLAUDE.md too.
 
@@ -102,6 +103,7 @@ Directory location is identity. A session launched in the Domain repo inside a d
 ## Where to read more
 
 - `README.md` — what this repo is and adopter onboarding
+- `docs/` — concepts, the session loading model, and the two setup guides (once per organisation, once per person)
 - `standards/` — templates, banned-pattern list, coverage gaps
 - `FORMATS.md` — what lives in Git, what lives elsewhere
 - `references/patterns/` — optional methodologies adopters may layer on

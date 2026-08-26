@@ -50,7 +50,7 @@ People who read the harness without committing — Operations, Finance, Legal, c
 
 **A human gates the publish.** Every artefact that leaves a draft state — a merged PR, a committed output, a cross-domain decision — passes a named human: the Admin on harness changes, the Leader on cross-domain decisions and strategy, the Product Owner on domain outputs, the Domain Lead on review rules.
 
-**A human gates high-risk tool calls.** The publish gate is necessary but not sufficient: an agent reading external content can be steered into a destructive action before any publish moment. Each repo's `.claude/settings.json` ships a permissions block that encodes the floor — read tools default-allow, write tools allow-listed to the repo's own working directories, destructive tools per-call. Sessions cannot write into a sibling repo even though they can read it.
+**A human gates high-risk tool calls.** The publish gate is necessary but not sufficient: an agent reading external content can be steered into a destructive action before any publish moment. Each repo's `.claude/settings.json` ships a permissions block that does the part a committed file can do: it allow-lists Edit and Write inside that repo's own working folders, and denies Write into the sibling repos' paths, so a session can read across the three-repo set but not write across it. The rest of the tool gate is session policy rather than committed configuration — read tools default to allowed, and destructive calls are approved one at a time by the operator. Sessions cannot write into a sibling repo even though they can read it.
 
 ## How a decision travels
 
