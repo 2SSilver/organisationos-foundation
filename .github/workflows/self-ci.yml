@@ -26,6 +26,7 @@ name: self-ci
 # adding them here would just duplicate that trigger on every PR:
 #   - draft-staleness.yml (weekly schedule)
 #   - propagation-sla.yml (weekly schedule)
+#   - monthly-dri.yml (workflow_dispatch here; the cron lives in Leadership's caller)
 #
 # Task 4 adds integrity jobs directly in this file (not as standalone reusable workflow
 # files): banned-patterns-validate, codeowners-lint, checklist-complete, agent-mirror-sync.
