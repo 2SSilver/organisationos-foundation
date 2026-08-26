@@ -12,7 +12,7 @@ If nobody has set the organisation up yet, that comes first: [Setting up Organis
 | Leader | All three | Leadership is your working surface; you review Domain PRs and Foundation decisions |
 | Admin | All three (plus every per-domain repo if the organisation split them) | You maintain all of it |
 
-Clone them as **siblings under one folder**, with these exact names. The cross-repo import in each `CLAUDE.md` is `../organisationos-foundation/CLAUDE.md`; any other layout makes it a silent no-op.
+Clone them as **siblings under one folder**, with these exact names. Each repo's `CLAUDE.md` points at `../organisationos-foundation/CLAUDE.md`, and every cross-repo path in the harness is written from that layout, so a different one breaks them silently. The pointer does not itself load Foundation's rules — see [How a session loads the three repos](loading-model.md).
 
 ```bash
 ORG=your-github-org

@@ -10,15 +10,15 @@ OrganisationOS is a harness for human↔AI-agent collaboration in a knowledge-wo
 | **Leadership** | Strategy, Leadership Forum minutes, the propagation log, the steward's drift log | Leaders and the Admin | …steers, but does not change any domain's working content |
 | **Domain** | One folder per domain: local ADRs, methods, drafts, outputs, a domain glossary, references to live artefacts | Everyone in that domain | …stays inside the domain unless it is promoted |
 
-Dependency runs one way. Leadership and Domain import Foundation's rules and call Foundation's CI; Foundation depends on neither. Splitting them keeps the blast radius of a change visible: a PR in Foundation is an organisation-wide change and is reviewed like one; a PR inside `domain-3/` is that domain's business.
+Dependency runs one way. Leadership and Domain build on Foundation's rules and call Foundation's CI; Foundation depends on neither. Splitting them keeps the blast radius of a change visible: a PR in Foundation is an organisation-wide change and is reviewed like one; a PR inside `domain-3/` is that domain's business.
 
 ```mermaid
 flowchart TB
     F["Foundation — the substrate<br/>standards · glossary · interfaces<br/>CDRs · NFRs · org-wide ADRs<br/>reusable CI · shared agents and commands"]
     L["Leadership — the steering surface<br/>strategy · forum cadence<br/>propagation log · drift log"]
     D["Domain — the working surface<br/>domain-1 … domain-N<br/>local ADRs · methods · outputs"]
-    L -- "imports CLAUDE.md<br/>calls reusable CI" --> F
-    D -- "imports CLAUDE.md<br/>calls reusable CI" --> F
+    L -- "references CLAUDE.md<br/>calls reusable CI" --> F
+    D -- "references CLAUDE.md<br/>calls reusable CI" --> F
 ```
 
 On disk the three are sibling folders under one parent. That layout is load-bearing: every cross-repo path in the harness is written as `../organisationos-foundation/…`, and the settings that give a session reach into Foundation name that exact relative path. Nest the repos anywhere else and those paths break, silently. See [How a session loads the three repos](loading-model.md).

@@ -11,8 +11,8 @@ flowchart TB
     F["Foundation — the substrate<br/>standards · glossary · interfaces<br/>CDRs · NFRs · org-wide ADRs<br/>reusable CI · shared agents and commands"]
     L["Leadership — the steering surface<br/>strategy · forum cadence<br/>propagation log · drift log"]
     D["Domain — the working surface<br/>domain-1 … domain-N<br/>local ADRs · methods · outputs"]
-    L -- "imports CLAUDE.md<br/>calls reusable CI" --> F
-    D -- "imports CLAUDE.md<br/>calls reusable CI" --> F
+    L -- "references CLAUDE.md<br/>calls reusable CI" --> F
+    D -- "references CLAUDE.md<br/>calls reusable CI" --> F
     style F stroke-width:3px
 ```
 
@@ -73,7 +73,7 @@ flowchart TB
 ```text
 organisationos-foundation/
   README.md                        ← this file
-  CLAUDE.md                        ← substrate rules, imported by both sibling repos
+  CLAUDE.md                        ← substrate rules; the sibling repos reference this file
   AGENTS.md                        ← cross-vendor agent baseline
   FORMATS.md                       ← format whitelist (canonical copy)
   CHANGELOG.md                     ← one line per merged substrate change
