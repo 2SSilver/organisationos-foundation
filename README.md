@@ -1,129 +1,114 @@
-# OrganisationOS — Foundation repo
+![OrganisationOS](docs/assets/banner.png)
 
-## 1. What this is
+# OrganisationOS — Foundation
 
-This is the **Foundation repo** of an OrganisationOS three-repo set. It is the substrate layer: every standard, interface, cross-domain decision, and shared workflow lives here and is loaded into every human↔AI-agent session across the organisation via `additionalDirectories`.
+**The substrate repo of an OrganisationOS three-repo set.** OrganisationOS is a harness for human↔AI-agent collaboration in a knowledge-work organisation: three Git repositories, a small set of conventions, and CI that keeps them honest. Foundation holds what every session in the organisation shares — standards, glossary, interfaces, cross-domain decisions, NFRs, org-wide ADRs, the reusable CI, and the shared agent commands. A change here propagates organisation-wide. The Leadership and Domain repos depend on this one; it depends on neither.
 
-The other two repos — Leadership and Domain — reference this repo. Changes here propagate organisation-wide.
+## The three repos
 
----
+```mermaid
+flowchart TB
+    F["Foundation — the substrate<br/>standards · glossary · interfaces<br/>CDRs · NFRs · org-wide ADRs<br/>reusable CI · shared agents and commands"]
+    L["Leadership — the steering surface<br/>strategy · forum cadence<br/>propagation log · drift log"]
+    D["Domain — the working surface<br/>domain-1 … domain-N<br/>local ADRs · methods · outputs"]
+    L -- "imports CLAUDE.md<br/>calls reusable CI" --> F
+    D -- "imports CLAUDE.md<br/>calls reusable CI" --> F
+    style F stroke-width:3px
+```
 
-## 2. Substrate inventory
+| Repo | Holds | |
+| --- | --- | --- |
+| **Foundation** | Shared standards, decisions, CI and tooling | **You are here** |
+| **Leadership** | Strategy, Forum cadence, propagation log, drift log | [organisationos-leadership](https://github.com/<adopter-org>/organisationos-leadership) |
+| **Domain** | Per-domain working content | [organisationos-domain](https://github.com/<adopter-org>/organisationos-domain) |
 
-What lives in Foundation:
-
-| Path | Contents |
-| --- | --- |
-| `standards/` | Templates (ADR, CDR, NFR, interface), banned-pattern list, coverage gaps |
-| `glossary.md` | Terms used across ≥2 domains |
-| `interfaces/` | Cross-domain interface contracts |
-| `cross-domain-decisions/` | CDRs — records of decisions that affected multiple domains |
-| `nfrs/` | Non-functional requirements applying org-wide |
-| `architectural-decisions/` | ADRs with org-wide or cross-domain scope |
-| `references/patterns/` | Optional methodologies adopters may layer on |
-| `.github/workflows/` | Reusable (workflow_call) CI workflows called by Leadership and Domain |
-| `.github/agents/` | Cross-vendor agent definitions |
-| `.github/hooks/` | Pre-commit hooks (banned-string check) |
-| `.claude/commands/` | Shared Claude slash commands |
-| `.claude/skills/` | Shared Claude skills |
-
-What does NOT live here: per-domain working content, Leadership strategy/cadence, steward drift log. Those belong in the Domain and Leadership repos.
-
----
-
-## 3. Clone layout
-
-Recommended layout — all three repos as siblings under one parent folder:
+On disk the three are siblings under one parent folder. The layout is load-bearing: every cross-repo path in the harness is written `../organisationos-foundation/…`, and the settings that give a session reach into Foundation name that exact path. Nest them inside another project or Git repository and those paths break, silently — see [docs/loading-model.md](docs/loading-model.md).
 
 ```text
 ~/projects/<adopter-org>/
   organisationos-foundation/     ← this repo
-  organisationos-leadership/     ← Leadership repo
-  organisationos-domain/         ← Domain repo (or one per domain if split)
+  organisationos-leadership/
+  organisationos-domain/         ← or one per domain if split
 ```
 
-**Critical:** do NOT nest these repos inside another project tree (e.g. not inside a PAI workspace mono-folder or another Git repo). Cross-repo `@import` in `CLAUDE.md` resolves via `../organisationos-foundation/CLAUDE.md` — the path must be a top-level sibling, not a deeply nested path.
+## Where do I start?
 
----
+```mermaid
+flowchart TB
+    Q{"Is OrganisationOS already running<br/>in your organisation?"}
+    Q -- "No — I am setting it up" --> ORG["docs/setup-org.md<br/>once per organisation"]
+    Q -- "Yes — I am joining" --> PER["docs/setup-person.md<br/>once per person"]
+    ORG --> O1["Create the three repos<br/>from the templates"] --> O2["Substitute the adopter-org placeholder<br/>bind CODEOWNERS"] --> O3["Enable Actions · sync labels<br/>apply branch protection"] --> O4["Enable the monthly<br/>maintenance issue"] --> PER
+    PER --> P1["Clone what your role<br/>needs, as siblings"] --> P2["Copy your role's<br/>two files"] --> P3["Install the<br/>pre-commit hook"] --> P4["Smoke-test the session<br/>run /onboard"]
+```
 
-## 4. Role-to-clone-set matrix
+- **Setting OrganisationOS up for an organisation** — [docs/setup-org.md](docs/setup-org.md). About two hours, done once by the person who will be Admin.
+- **Joining an organisation that already runs it** — [docs/setup-person.md](docs/setup-person.md). About thirty minutes.
+- **Understanding it first** — [docs/concepts.md](docs/concepts.md) for the model, roles and how a decision travels; [docs/loading-model.md](docs/loading-model.md) for what an agent session actually loads from the other repos.
 
-| Role | Required clones | `additionalDirectories` pattern |
-| --- | --- | --- |
-| Team Member / Product Owner / Domain Lead | Domain + Foundation | `["../organisationos-foundation"]` in Domain's `settings.local.json` |
-| Leader | All three | `["../organisationos-foundation", "../organisationos-domain"]` from Leadership; or `["../organisationos-foundation", "../organisationos-leadership"]` from Domain |
-| Admin | All three (+ per-domain if split-per-domain) | Full set in every clone's `settings.local.json` |
+## What lives here
 
-Foundation itself does not need `additionalDirectories` — it is the source, not a consumer.
+| Path | Contents |
+| --- | --- |
+| `standards/` | Templates (ADR, CDR, interface, handover, …), the banned-pattern list, coverage gaps |
+| `glossary.md` | Terms used across two or more domains |
+| `interfaces/` | Cross-domain interface contracts |
+| `cross-domain-decisions/` | CDRs — decisions that affected more than one domain |
+| `nfrs/` | Non-functional requirements applying org-wide |
+| `architectural-decisions/` | ADRs with org-wide or cross-domain scope |
+| `syntheses/` | Cross-domain read-only syntheses |
+| `references/patterns/` | Optional methodologies adopters may layer on |
+| `docs/` | Concepts, loading model, the two setup guides |
+| `.github/workflows/` | Reusable (`workflow_call`) CI called by Leadership and Domain, pinned at `@v1` |
+| `.github/agents/` | Cross-vendor agent definitions (Copilot-CLI-native source of truth) |
+| `.claude/agents/` | Claude Code mirror of the same agents |
+| `.github/hooks/` | The banned-string pre-commit hook |
+| `.claude/commands/` | Shared slash commands: `/onboard`, `/update-wiki`, `/find-relevant-knowledge`, `/raise-cdr`, `/drift-check`, `/promotion-candidate` |
+| `.claude/skills/` | Shared skills |
 
----
+**Not here:** per-domain working content (Domain repo), strategy and Forum cadence (Leadership repo), the steward's drift log (Leadership repo).
 
-## 5. Adopter onboarding sequence
-
-1. **Clone all three repos** as siblings (see §3 above).
-2. **Substitute the org placeholder** — replace `<adopter-org>` with the GitHub owner of your Foundation repo in every caller workflow: `.github/workflows/*.yml` in the **Domain and Leadership** repos (12 and 9 files respectively). Each caller resolves to `<adopter-org>/organisationos-foundation/.github/workflows/<name>.yml@v1`, so until this is substituted the workflow file is invalid and the run fails. Foundation itself has no `<adopter-org>` reference in its workflows — `self-ci.yml` calls its reusables by local path. Also substitute it in `AGENTS.md` in both Domain and Leadership — each carries a functional pointer, `<adopter-org>/organisationos-foundation/.github/agents/`, that Claude resolves via `additionalDirectories`; left unsubstituted, that pointer is dead in both repos.
-3. **Bind CODEOWNERS** — replace the `@placeholder-admin`, `@placeholder-leader`, and `@placeholder-domain-N-lead` handles in `.github/CODEOWNERS` with real GitHub handles, in all three repos. These handles appear only in CODEOWNERS, never in the workflows.
-4. **Install the pre-commit hook** — the hook ships in Foundation only, as `.github/hooks/banned-string-pre-commit`. Install it in each clone that needs it: `cp <path-to-foundation>/.github/hooks/banned-string-pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
-5. **Apply label taxonomy** — the taxonomy ships in Foundation as `.github/labels.yml` (§12), together with a `label-sync` workflow that applies it. All three repos already ship both, so there is nothing to copy — run `gh workflow run label-sync.yml` once per repo (or trigger it from the Actions tab). It is idempotent, so re-run it whenever `labels.yml` changes. Labels are for triage and for the workflows that apply them programmatically. Since AR-09 `checklist-complete` is path-driven and no longer depends on a label, but `back-flow-rules` still does: the `back-flow` label is its signal, and a PR touching a back-flow-shaped path (by default `domain-N/methods/` or `domain-N/prompts/` — a Pattern B adopter can narrow that list, or pass `none`, via the workflow's `knowledge-paths` input) with no `back-flow` label fails the check. If `label-sync` has not been run in this repo yet, the label does not exist to apply, so run it before anyone opens a back-flow PR.
-6. **Enable Actions** — do this only after step 2. Actions are disabled on the published Domain and Leadership template repos precisely because the unsubstituted `<adopter-org>` placeholder makes every caller invalid; a repo created from the template starts with Actions enabled, so substitute first or expect a wave of invalid-workflow failures. Foundation's `self-ci.yml` triggers on `pull_request` only, so pushing to `main` produces no runs — that is expected, not a misconfiguration.
-7. **Configure personal context** — the role→`additionalDirectories` mapping has one canonical source: the 5 role-specific files in `standards/templates/onboarding/`. Copy the file matching your role (`settings.local.json.example-<role>` — e.g. `settings.local.json.example-domain-lead`) to `.claude/settings.local.json` in each clone you will work from. Also copy the matching `claude-local-<role>.example.md` to `CLAUDE.local.md`. Do not use a bare repo-root `.claude/settings.local.json.example` — where one exists it is a pointer to this onboarding folder, not a second source of the mapping. On a role change (promotion, a domain added), re-copy from the updated onboarding file rather than hand-editing `additionalDirectories` — see the monthly-DRI checklist.
-8. **First onboard** — run the Foundation onboard command: `/onboard` from a Claude session launched in the Domain clone. (`onboard.md` saves its output to `<domain>/_drafts/onboarding-<handle>.md` — a path that does not exist in this repo, since Foundation has no `domain-N/` folders.)
-
----
-
-## 6. Repository structure
+## Repository structure
 
 ```text
 organisationos-foundation/
-  CLAUDE.md                        ← canonical substrate rules (loaded by all three repos)
-  AGENTS.md                        ← cross-vendor agent baseline
-  FORMATS.md                       ← format whitelist
   README.md                        ← this file
-  glossary.md                      ← cross-domain terminology
-  .gitignore
+  CLAUDE.md                        ← substrate rules, imported by both sibling repos
+  AGENTS.md                        ← cross-vendor agent baseline
+  FORMATS.md                       ← format whitelist (canonical copy)
+  CHANGELOG.md                     ← one line per merged substrate change
+  glossary.md
+  docs/
+    concepts.md  loading-model.md  setup-org.md  setup-person.md
+    assets/banner.png
   standards/
-    templates/
-      adr-template.md
-      cdr-template.md
-      nfr-template.md
-      interface-template.md
-      back-flow-template.md
+    templates/                     ← adr, cdr, cdr-light, interface, handover, change-proposal, …
+    templates/onboarding/          ← one settings.local.json + CLAUDE.local.md pair per role
     banned-patterns.yml
     coverage-gaps.md
-  interfaces/                      ← cross-domain interface contracts
-  cross-domain-decisions/          ← CDRs
-  nfrs/                            ← org-wide non-functional requirements
-  architectural-decisions/         ← org-wide / cross-domain ADRs
-  references/
-    patterns/                      ← optional methodology overlays
+  interfaces/  cross-domain-decisions/  nfrs/  architectural-decisions/  syntheses/
+  references/patterns/
   .github/
-    CODEOWNERS
-    PULL_REQUEST_TEMPLATE.md
-    ISSUE_TEMPLATE/
-    workflows/                     ← reusable (workflow_call) CI definitions
-    hooks/                         ← pre-commit hooks
-    agents/                        ← cross-vendor agent definitions
+    CODEOWNERS  PULL_REQUEST_TEMPLATE.md  ISSUE_TEMPLATE/  labels.yml
+    workflows/                     ← reusable CI + self-ci.yml (runs them on Foundation's own PRs)
+    hooks/  agents/
   .claude/
-    commands/                      ← shared slash commands
-    skills/                        ← shared skills
-    settings.json
-    settings.local.json.example
+    commands/  skills/  agents/  settings.json
 ```
 
----
+## Worked example — GreenLeaf Research Lab
 
-## 7. Generic worked example — GreenLeaf Research Lab
+GreenLeaf runs four domains: **research**, **operations**, **fundraising** and **compliance**, each with a Domain Lead, plus one Leader and one Admin.
 
-GreenLeaf Research Lab runs four domains: **research**, **operations**, **fundraising**, and **compliance**. Each domain has a Domain Lead, plus one Leader and one Admin.
+A researcher proposes a shared anonymisation standard — how identifying details are removed from datasets before they enter any domain's working folder. Research produces the data, operations stores it, compliance signs off, fundraising cites the outcomes: a cross-domain concern. The researcher drafts a CDR from `standards/templates/cdr-template.md` and opens a PR here. `structure-check` confirms the CDR follows the template; `checklist-complete` confirms the Approval checklist is filled in. One Leader and the Domain Leads of research, operations and compliance review. On merge, the Admin records the propagation in Leadership's `cadence/propagation-log.md` and opens implementation PRs for the three affected domains in the Domain repo; each Domain Lead merges their own.
 
-A researcher on the research domain proposes a shared anonymisation standard — a method for removing identifying details from published datasets before they enter any domain's working folder. This is a cross-domain concern (research produces data, operations stores it, compliance signs off, fundraising references outcomes).
+The full circuit, drawn, is in [docs/concepts.md](docs/concepts.md#how-a-decision-travels).
 
-The researcher drafts a CDR using `standards/templates/cdr-template.md` and opens a PR in Foundation. The PR triggers Foundation's `structure-check` (asserts the CDR follows `cdr-template.md`'s structure) and `checklist-complete` (asserts the Approval checklist is filled in) CI checks. One Leader plus the Domain Lead of each affected domain (research, operations, compliance) review the PR. On merge, Admin opens a propagation log entry in the Leadership repo (`cadence/propagation-log.md`) and opens implementation PRs in the Domain repo for the three affected domains. Each Domain Lead merges their domain's implementation PR independently.
+## Further reading
 
-The anonymisation standard is now in `standards/`, referenced by domain-level ADRs, and enforced by the banned-string check.
+- [`FORMATS.md`](FORMATS.md) — what lives in Git and what is referenced from elsewhere
+- [`CHANGELOG.md`](CHANGELOG.md) — the announcement surface for merged substrate changes
+- [`references/patterns/`](references/patterns/README.md) — Wardley mapping, Team Topologies, OKRs, flow engineering, opportunity-solution trees
+- [`.claude/agents/README.md`](.claude/agents/README.md) — how the agent definitions are mirrored across vendors
 
----
-
-## 8. Where to find a worked instance
-
-No worked instance is currently committed in this workspace. Once your organisation's concrete instance is instantiated, replace this pointer with a link to it.
+These templates originate from [2SSilver/organisationos-foundation](https://github.com/2SSilver/organisationos-foundation), MIT licensed. They were built from an internal design specification; nothing in that specification is required to operate the repos.
