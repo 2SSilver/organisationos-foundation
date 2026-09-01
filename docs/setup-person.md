@@ -67,18 +67,18 @@ done
 
 A wrong install is silent, so test it before you trust it. Start Claude in the folder you will actually work from — `organisationos-domain/domain-N/` for domain roles, the repo root for Leader and Admin — and ask:
 
-> Read Foundation's CLAUDE.md and tell me what the format policy says about built outputs such as decks.
+> Read Foundation's `standards/coverage-gaps.md` and quote the Defence for the "Date identifiers" row.
 
-The answer should be that built outputs are referenced from a domain's `references.md` rather than committed, per `FORMATS.md`. That rule lives only in Foundation, so a correct answer proves this session can reach Foundation and read it.
+The answer should quote: "Back-flow review (Domain Lead recognises the date)." That file sits under Foundation's `standards/`, a folder neither Domain nor Leadership carries, so a correct answer shows this session can reach Foundation and read it.
 
-It does not prove Foundation's rules are already in context. Nothing puts them there automatically, and the `@import` line near the top of your repo's `CLAUDE.md` is a pointer rather than a loader. See [How a session loads the three repos](loading-model.md). What the test does prove is that the reach is configured, which is the part people get wrong.
+It does not prove Foundation's rules are already in context. Nothing puts them there automatically, and the `@import` line near the top of your repo's `CLAUDE.md` is a pointer rather than a loader. See [How a session loads the three repos](loading-model.md). What the test does show is that the reach is configured, which is the part people get wrong.
 
 Two more checks while you are there:
 
 - The session addresses you by name, from your `CLAUDE.local.md`, rather than as "your human partner".
 - If you started with `claude --add-dir ../organisationos-foundation` (`../../` from inside a domain folder), `/onboard` and `/find-relevant-knowledge` appear in the command list.
 
-If the session cannot find or read Foundation's `CLAUDE.md`, stop and fix two things before doing any work: that `../organisationos-foundation/` really is a sibling of the repo you launched in, and that your `.claude/settings.local.json` lists it under `additionalDirectories`. The commonest cause is copying a repo-root `settings.local.json.example`, whose list ships empty.
+If the session cannot find or read that file, stop and fix two things before doing any work: that `../organisationos-foundation/` really is a sibling of the repo you launched in, and that your `.claude/settings.local.json` lists it under `additionalDirectories`. The commonest cause is copying a repo-root `settings.local.json.example`, whose list ships empty.
 
 ## 5. Run `/onboard`
 

@@ -144,7 +144,7 @@ done
 
 ## Step 10 — Now set yourself up as a person
 
-You are also a user of the harness. Continue with [Joining an organisation that runs OrganisationOS](setup-person.md), which covers your role's `settings.local.json`, your `CLAUDE.local.md`, and the smoke test that proves Foundation's rules actually load in your sessions.
+You are also a user of the harness. Continue with [Joining an organisation that runs OrganisationOS](setup-person.md), which covers your role's `settings.local.json`, your `CLAUDE.local.md`, and the smoke test that shows whether your session can reach Foundation — not whether its rules are loaded.
 
 ## Afterwards
 
