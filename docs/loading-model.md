@@ -44,13 +44,13 @@ The environment variable `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` govern
 
 A wrong install is silent, so test it. Start a session in the folder you actually work from and ask:
 
-> Read Foundation's CLAUDE.md and tell me what the format policy says about built outputs such as decks.
+> Read Foundation's `standards/coverage-gaps.md` and quote the Defence for the "Date identifiers" row.
 
-The answer should be that built outputs are referenced from a domain's `references.md` rather than committed, per `FORMATS.md`.
+The answer should quote: "Back-flow review (Domain Lead recognises the date)." That file sits under Foundation's `standards/`, a folder neither Domain nor Leadership carries.
 
-A correct answer proves this session can **reach** Foundation and read it. It does not prove Foundation's rules are already in context — nothing puts them there automatically. If the answer is wrong, or the session says it cannot find or access the file, stop and fix two things before doing any work: that `../organisationos-foundation/` really is a sibling of the repo you launched in, and that your `.claude/settings.local.json` lists it under `additionalDirectories`.
+Treat this as a check for a broken install, not proof of a working one. A correct answer shows this session can **reach** that file in Foundation. It does not show Foundation's rules are already in context — nothing puts them there automatically. A wrong answer, or one that says the file cannot be found, means Foundation is not where it needs to be: check that `../organisationos-foundation/` really is a sibling of the repo you launched in, and that your `.claude/settings.local.json` lists it under `additionalDirectories`.
 
-Mechanism behaviour verified against Claude Code on 2026-08-26, by running the three configurations above and comparing an in-project import against a cross-repo one in the same file.
+Mechanism behaviour re-verified by an eight-cell, negative-controlled experiment on 2026-09-01. Its one load-side minimal pair — identical launch directory and trust, differing only in the environment variable — isolated `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` as what brings a mounted directory's `CLAUDE.md` into context.
 
 ## Further reading
 

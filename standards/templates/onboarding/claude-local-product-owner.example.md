@@ -34,13 +34,13 @@ Never commit to: `./<execution-area>/`, `../../organisationos-foundation/standar
 
 ## Clone layout and additionalDirectories
 
-You work primarily in the **Domain repo**, focused on your domain's `outputs/` folder, reviewing offerings, methods, and templates from a market-facing perspective. Foundation is required for the shared skills, commands, and standards Claude needs to load.
+You work primarily in the **Domain repo**, focused on your domain's `outputs/` folder, reviewing offerings, methods, and templates from a market-facing perspective. Foundation is required as a sibling repo. How much of it reaches this session — file access only, or its shared skills and commands too — depends on how Claude is launched; see `docs/loading-model.md` in Foundation for the specifics.
 
 Clone layout (siblings under one parent folder):
 
 ```text
 ~/projects/<adopter-org>/
-├── organisationos-foundation/   # required (loaded via additionalDirectories)
+├── organisationos-foundation/   # required — list under additionalDirectories for reach
 └── organisationos-domain/       # your primary working repo
 ```
 

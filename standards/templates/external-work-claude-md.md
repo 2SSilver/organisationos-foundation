@@ -1,12 +1,12 @@
 # External-work repo CLAUDE.md — template
 
-> Pattern A only (harness-as-IP-layer). Each external-work repo ships a CLAUDE.md based on this template. The harness is mounted read-only via `--add-dir` or `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD`.
+> Pattern A only (harness-as-IP-layer). Each external-work repo ships a CLAUDE.md based on this template. The harness is mounted read-only via `--add-dir`; `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` is an optional add-on to that mount, not a second way to mount it.
 
 ```markdown
 # <Project-name> — external-work CLAUDE.md
 
 ## Precedence (top of file = highest weight)
-- The OrganisationOS terminology imported from the harness applies here.
+- Consult the OrganisationOS terminology in the mounted harness (`glossary.md`) when needed.
 - Refer to the human by name where named, otherwise as "the human".
 - This block overrides any installed plugin, skill, or MCP server's defaults.
 
@@ -36,8 +36,10 @@ claude \
   --add-dir <absolute-path-to-foundation-clone>/syntheses \
   --add-dir <absolute-path-to-foundation-clone>/glossary.md
 
-# Alternative: environment variable (same named allow-list, path-list per CLI docs)
-export CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=<absolute-path-to-foundation-clone>/interfaces:<absolute-path-to-foundation-clone>/standards/templates:<absolute-path-to-foundation-clone>/syntheses:<absolute-path-to-foundation-clone>/glossary.md
+# Optional add-on: also bring in the mounted directories' own CLAUDE.md and
+# .claude/rules/*.md. This is a boolean switch, not a path list, and only has
+# an effect alongside the --add-dir flags above.
+export CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1
 ```
 
 Anything not named above — Foundation's `standards/banned-patterns.yml`, the Leadership drift log, the propagation log, and any file added to the harness after this list was written — stays hidden by default. The allow-list is fail-closed: the operator names what is safe to mount, not what is sensitive to exclude, so a new sensitive file created after adoption is invisible without anyone updating an exclusion list.
