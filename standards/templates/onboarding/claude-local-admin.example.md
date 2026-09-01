@@ -59,11 +59,13 @@ In every clone's `.claude/settings.local.json` (gitignored), reference the full 
 
 ```json
 {
-  "additionalDirectories": [
-    "../organisationos-foundation",
-    "../organisationos-leadership",
-    "../organisationos-domain"
-  ]
+  "permissions": {
+    "additionalDirectories": [
+      "../organisationos-foundation",
+      "../organisationos-leadership",
+      "../organisationos-domain"
+    ]
+  }
 }
 ```
 

@@ -1,4 +1,10 @@
 {
   "//": "Copy to .claude/settings.local.json (gitignored). Admin: full set. Add every additional split Domain repo if your org runs split-per-domain (e.g. ../organisationos-domain-architecture).",
-  "additionalDirectories": ["../organisationos-foundation", "../organisationos-leadership", "../organisationos-domain"]
+  "permissions": {
+    "additionalDirectories": [
+      "../organisationos-foundation",
+      "../organisationos-leadership",
+      "../organisationos-domain"
+    ]
+  }
 }
