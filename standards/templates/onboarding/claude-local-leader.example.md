@@ -50,10 +50,12 @@ In `organisationos-leadership/.claude/settings.local.json` (gitignored):
 
 ```json
 {
-  "additionalDirectories": [
-    "../organisationos-foundation",
-    "../organisationos-domain"
-  ]
+  "permissions": {
+    "additionalDirectories": [
+      "../organisationos-foundation",
+      "../organisationos-domain"
+    ]
+  }
 }
 ```
 

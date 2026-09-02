@@ -48,7 +48,9 @@ In `organisationos-domain/.claude/settings.local.json` (gitignored):
 
 ```json
 {
-  "additionalDirectories": ["../organisationos-foundation"]
+  "permissions": {
+    "additionalDirectories": ["../organisationos-foundation"]
+  }
 }
 ```
 

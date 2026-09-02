@@ -1,4 +1,8 @@
 {
   "//": "Copy to .claude/settings.local.json in your Domain repo clone (gitignored). Domain Lead: Domain + Foundation.",
-  "additionalDirectories": ["../organisationos-foundation"]
+  "permissions": {
+    "additionalDirectories": [
+      "../organisationos-foundation"
+    ]
+  }
 }

@@ -1,4 +1,9 @@
 {
   "//": "Copy to .claude/settings.local.json (gitignored). Leader: add Leadership when working in a Domain repo; when working in the Leadership repo, point at Foundation + any Domain repos instead.",
-  "additionalDirectories": ["../organisationos-foundation", "../organisationos-leadership"]
+  "permissions": {
+    "additionalDirectories": [
+      "../organisationos-foundation",
+      "../organisationos-leadership"
+    ]
+  }
 }

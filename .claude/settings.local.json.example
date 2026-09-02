@@ -1,4 +1,6 @@
 {
   "//": "Generic example for working IN the Foundation repo (Admin/Leader on substrate work). For role-specific examples used in Domain/Leadership clones, copy from standards/templates/onboarding/settings.local.json.example-<role>.",
-  "additionalDirectories": []
+  "permissions": {
+    "additionalDirectories": []
+  }
 }
