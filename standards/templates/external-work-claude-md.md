@@ -1,6 +1,6 @@
 # External-work repo CLAUDE.md — template
 
-> Pattern A only (harness-as-IP-layer). Each external-work repo ships a CLAUDE.md based on this template. The harness is mounted read-only via `--add-dir`; `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` is an optional add-on to that mount, not a second way to mount it.
+> Pattern A only (harness-as-IP-layer). Each external-work repo ships a CLAUDE.md based on this template. The harness is reached via `--add-dir`, which grants access through Claude Code's own permission layer rather than an operating-system mount; `CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1` is an optional add-on to it, not a second way to reach the harness.
 
 ```markdown
 # <Project-name> — external-work CLAUDE.md
@@ -27,9 +27,9 @@
 ## How to reference the harness
 
 ```bash
-# Read-only mount allow-list (preferred — OS-level isolation, fail-closed).
+# Scope the grant to the subfolders this engagement actually needs.
 # Name only safe subfolders — never the harness repo root. Repeat --add-dir
-# per subfolder; nothing outside this list is visible to the session.
+# per subfolder.
 claude \
   --add-dir <absolute-path-to-foundation-clone>/interfaces \
   --add-dir <absolute-path-to-foundation-clone>/standards/templates \
@@ -42,7 +42,11 @@ claude \
 export CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD=1
 ```
 
-Anything not named above — Foundation's `standards/banned-patterns.yml`, the Leadership drift log, the propagation log, and any file added to the harness after this list was written — stays hidden by default. The allow-list is fail-closed: the operator names what is safe to mount, not what is sensitive to exclude, so a new sensitive file created after adoption is invisible without anyone updating an exclusion list.
+`--add-dir` grants reach through Claude Code's own permission layer. It is not a filesystem mount and not a sandbox: it grants **read and write** to the directories named, and it hides nothing. Listing only the subfolders an engagement needs is still worth doing: it keeps the rest of the harness — `standards/banned-patterns.yml`, the Leadership drift log, the propagation log, and anything added after the list was written — outside what the session reaches by default, and a file created later is not added to the list by accident.
+
+Treat that as scoping, not as a confidentiality boundary. The allow-list is enforced by the tool, so it holds only as far as the tool's own permission gates hold: a session permitted to run shell commands can read a path nobody named, and nothing in the allow-list prevents it.
+
+**Where an engagement requires confinement that holds regardless of what the agent does**, configure it at the operating-system level before the session starts: a separate user account whose filesystem permissions deny the paths in question, a container, or a virtual machine with only the intended directories bound in. The allow-list then scopes reach inside that boundary.
 
 ## Back-flow PRs
 
