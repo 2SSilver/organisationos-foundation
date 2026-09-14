@@ -107,3 +107,4 @@ A decision starts where the work is. A Team Member drafts an ADR in their domain
 - [Setting up for an organisation](setup-org.md) · [Joining an organisation that runs this](setup-person.md)
 - [`FORMATS.md`](../FORMATS.md) — what lives in Git and what is referenced from elsewhere
 - [`references/patterns/`](../references/patterns/README.md) — optional methodologies (Wardley mapping, Team Topologies, OKRs, …) adopters may layer on
+- [The as-built PRD set](https://github.com/<adopter-org>/organisationos-leadership/tree/main/steward/prds) — capability-level PRDs with per-requirement status, in the Leadership repo
