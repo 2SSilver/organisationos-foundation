@@ -39,21 +39,31 @@ jobs:
             echo "::error::banned-patterns.yml not found in Foundation checkout. Verify inputs.foundation-repo."
             exit 1
           fi
+          scan_script="_foundation/.github/scripts/banned-scan.sh"
+          if [ ! -f "$scan_script" ]; then
+            echo "::error::banned-scan.sh not found in the Foundation checkout at ref '${{ inputs.foundation-ref }}'."
+            echo "::error::This workflow version requires it. Point inputs.foundation-ref at a Foundation commit that includes .github/scripts/banned-scan.sh (main does)."
+            exit 1
+          fi
           changed=$(git diff --name-only --diff-filter=AM "origin/${GITHUB_BASE_REF}...HEAD")
           if [ -z "$changed" ]; then exit 0; fi
-          patterns=$(yq '.[] | .pattern' "$patterns_file" | grep -v '^null$' || true)
+          # Build the scan list here; the scan itself lives in one script both
+          # enforcement points call, so the gate and the hook cannot drift apart.
+          scan=()
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            [ -f "$f" ] || continue
+            case "$f" in _foundation/*) continue ;; esac
+            case "$f" in standards/banned-patterns.yml) continue ;; esac
+            # The scan's own fixtures must contain the patterns to test against.
+            case "$f" in .github/scripts/banned-scan.test.sh) continue ;; esac
+            scan+=("$f")
+          done <<< "$changed"
+          [ ${#scan[@]} -gt 0 ] || exit 0
           fail=0
-          for p in $patterns; do
-            for f in $changed; do
-              [ -f "$f" ] || continue
-              case "$f" in _foundation/*) continue ;; esac
-              case "$f" in standards/banned-patterns.yml) continue ;; esac
-              if rg -qi "\b${p}\b" "$f"; then
-                echo "::error file=$f::matches banned pattern '$p'. Remove the identifying detail before re-pushing."
-                fail=1
-              fi
-            done
-          done
+          if ! bash _foundation/.github/scripts/banned-scan.sh "$patterns_file" "${scan[@]}"; then
+            fail=1
+          fi
           if [ $fail -ne 0 ]; then
             echo ""
             echo "If a banned string has already reached origin, treat the secret as compromised and rotate."

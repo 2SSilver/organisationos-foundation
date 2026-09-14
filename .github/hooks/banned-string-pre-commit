@@ -75,21 +75,28 @@ if [ -z "$staged" ]; then
   exit 0
 fi
 
-# Patterns and staged paths are newline-separated; iterate without word-splitting
-# so multi-word patterns and filenames containing spaces are handled correctly.
-patterns=$(yq '.[] | .pattern' "$patterns_file" | grep -v '^null$' || true)
+# The scan itself lives in banned-scan.sh, alongside banned-patterns.yml in
+# Foundation, so this hook and banned-string-check.yml run identical logic.
+scan_script="$(dirname "$patterns_file")/../.github/scripts/banned-scan.sh"
+if [ ! -f "$scan_script" ]; then
+  echo "WARNING: banned-scan.sh not found next to banned-patterns.yml ($scan_script)."
+  echo "  Your Foundation clone may predate it. Run: git -C $(dirname "$patterns_file")/.. pull"
+  echo "  Proceeding WITHOUT a local banned-string check; CI still gates the PR."
+  exit 0
+fi
+staged_files=()
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  [ -f "$f" ] || continue
+  case "$f" in standards/banned-patterns.yml) continue ;; esac
+  case "$f" in .github/scripts/banned-scan.test.sh) continue ;; esac
+  staged_files+=("$f")
+done <<< "$staged"
+[ ${#staged_files[@]} -gt 0 ] || exit 0
 fail=0
-while IFS= read -r p; do
-  [ -z "$p" ] && continue
-  while IFS= read -r f; do
-    [ -z "$f" ] && continue
-    [ -f "$f" ] || continue
-    if rg -qi "\b${p}\b" "$f"; then
-      echo "BLOCKED: $f matches banned pattern '$p'. Remove the identifying detail before committing."
-      fail=1
-    fi
-  done <<< "$staged"
-done <<< "$patterns"
+if ! bash "$scan_script" "$patterns_file" "${staged_files[@]}"; then
+  fail=1
+fi
 
 if [ $fail -ne 0 ]; then
   echo ""

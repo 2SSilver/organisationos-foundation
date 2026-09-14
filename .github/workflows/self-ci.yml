@@ -155,8 +155,10 @@ jobs:
             echo "$dupes"
             fail=1
           fi
-          # Every regex-flagged pattern must actually compile.
-          regex_patterns=$(yq '.[] | select(.match != null and (.match | test("regex"))) | .pattern' "$file" | grep -v '^null$' || true)
+          # Every pattern must compile as a regex. The scan matches each one with
+          # `rg`, which applies regex semantics unconditionally, so a pattern that
+          # does not compile is a broken entry regardless of how it is declared.
+          regex_patterns=$(yq '.[] | select(has("pattern")) | .pattern' "$file" || true)
           while IFS= read -r p; do
             [ -z "$p" ] && continue
             if ! python3 -c "import re, sys; re.compile(sys.argv[1])" "$p" 2>/tmp/regex-err; then
@@ -165,6 +167,23 @@ jobs:
             fi
           done <<< "$regex_patterns"
           exit $fail
+
+  banned-scan-tests:
+    # The banned-string scan is a confidentiality control, so its own logic is
+    # tested rather than assumed. Runs the fixture suite in
+    # .github/scripts/banned-scan.test.sh on every Foundation PR: a violating
+    # input must fail and a clean one must pass, for plain, multi-word, regex and
+    # !context-near entries alike.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ripgrep + yq
+        run: |
+          sudo apt-get update && sudo apt-get install -y ripgrep
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+      - name: Run banned-scan tests
+        run: bash .github/scripts/banned-scan.test.sh
 
   codeowners-lint:
     # MR-06: branch protection (docs/setup-org.md → Step 7) only matters if CODEOWNERS actually names >=1 owner

@@ -69,8 +69,11 @@ jobs:
             case "$base" in
               CODEOWNERS|.gitignore|.gitkeep|.lycheeignore) continue ;;
             esac
-            # Hidden config files
+            # Harness machinery under .github/ — hooks and the CI scripts the
+            # workflows call. FORMATS.md governs content formats; these are not
+            # content, so they are exempt by path rather than by extension.
             case "$f" in .github/hooks/*) continue ;; esac
+            case "$f" in .github/scripts/*) continue ;; esac
             if ! echo "$allowed_extensions" | grep -wq "$ext"; then
               echo "::error file=$f::extension '.$ext' is not on FORMATS.md's whitelist."
               echo "The harness keeps non-whitelisted files outside Git. Add a reference in the relevant domain's references.md with the URL where this file lives, or remove the file from the PR. See FORMATS.md."
