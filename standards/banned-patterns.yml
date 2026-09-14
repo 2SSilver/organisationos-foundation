@@ -2,10 +2,11 @@
 # Pattern A (harness-as-IP-layer) adopters maintain this file; Pattern B adopters may leave it empty.
 #
 # Pattern language:
-#   - `pattern:` — the string or regex to match.
-#   - `match:` — modifiers: word-boundary, case-insensitive, diacritic-insensitive, regex.
-#     Defaults: word-boundary, case-insensitive.
-#   - `!context-near` — co-occurrence directive. Fails if two strings appear within a token window.
+#   - `pattern:` — the string or regex to match. Every pattern is matched as a
+#     regex, case-insensitively, at word boundaries. Those are not options: the
+#     scan applies them to every entry.
+#   - `!context-near` — co-occurrence directive. Fails when both strings appear
+#     within `window` tokens of each other (default 100).
 #
 # This file is necessary but insufficient — see coverage-gaps.md for what CI cannot detect.
 # Back-flow review (two-reviewer rule on `back-flow`-labelled PRs) is the ceiling.
@@ -13,10 +14,8 @@
 # --- Adopter examples (replace with real patterns) ---
 
 - pattern: ExampleClientName
-  match: word-boundary, case-insensitive, diacritic-insensitive
 
 - pattern: "ACME-\\d{4}"  # internal project codes
-  match: regex, case-sensitive
 
 # Structural co-occurrence — two anodyne strings that together identify
 - !context-near
