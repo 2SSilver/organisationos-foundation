@@ -7,9 +7,10 @@ Budget about two hours. You need: a GitHub organisation (or user account) that w
 ```mermaid
 flowchart TB
     O1["1–2 Create the three repos from the templates<br/>and clone them as siblings"] --> O2["3–4 Substitute the adopter-org placeholder<br/>and bind CODEOWNERS to real handles"]
-    O2 --> O3["5–6 Enable Actions, then sync labels"]
-    O3 --> O4["7–8 Apply branch protection and<br/>enable the monthly maintenance issue"]
-    O4 --> P["Then: your own once-per-person setup"]
+    O2 --> O3["5–6 Tag Foundation v1, enable Actions,<br/>then sync labels"]
+    O3 --> O4["7–9 Apply branch protection, enable the monthly<br/>maintenance issue, install the pre-commit hook"]
+    O4 --> O5["10 Verify the setup"]
+    O5 --> P["Then: your own once-per-person setup"]
 ```
 
 ## Step 1 — Create the three repos
@@ -53,6 +54,19 @@ done
 
 Commit and push in each repo. The `~/projects/<adopter-org>/` folder trees drawn in the READMEs are illustrations and are left as they are by this sweep only if you prefer — they are prose, not configuration.
 
+### Also in Step 3 — pin the plugin supply chain
+
+`<adopter-org>` is a find-and-replace. Two more placeholders in each repo's `.claude/settings.json` are not: they are decisions, and the sweep above does not touch them.
+
+```bash
+grep -rn 'REPLACE-WITH-AUDITED-COMMIT-SHA\|<pinned-version-or-ref>' organisationos-*/.claude/settings.json
+```
+
+- **`REPLACE-WITH-AUDITED-COMMIT-SHA`** — the commit of the `anthropic-official` marketplace your organisation has audited and is willing to run. Pin a commit SHA, not a tag or branch: a tag can be moved under you. `strictKnownMarketplaces` is on, so this is the only marketplace a session will accept.
+- **`<pinned-version-or-ref>`** — the `superpowers` plugin version to run against that marketplace.
+
+Set both in all three repos, then delete the `_notes` array from each file; it is documentation for this step, not configuration. Bumping either pin later is a two-approver PR per `.github/CODEOWNERS`.
+
 ## Step 4 — Bind CODEOWNERS
 
 Each repo's `.github/CODEOWNERS` names `@placeholder-admin`, `@placeholder-leader` and `@placeholder-domain-N-lead`. Replace them with real GitHub handles in all three repos. These handles appear only in CODEOWNERS.
@@ -63,9 +77,18 @@ grep -rn 'placeholder-' organisationos-*/.github/CODEOWNERS
 
 Leave the Domain repo's `domain-1/` … `domain-4/` folders as they are for now; renaming domains is a Domain-repo task and is described in that repo's README.
 
-## Step 5 — Enable Actions
+## Step 5 — Tag Foundation's reusables as `v1`, then enable Actions
 
-Actions are disabled on the published Leadership and Domain templates precisely because Step 3 has not run on them. Now that it has, enable them: **Settings → Actions → General → Allow all actions and reusable workflows** in each of the three repos, and under **Workflow permissions** confirm *Read repository contents and packages permissions* (the workflows that need more request it per job).
+Every Leadership and Domain workflow calls Foundation's reusables at `@v1` — 21 callers in all. **`gh repo create --template` copies no tags**, so the Foundation you created in Step 1 has none, and every one of those callers fails the moment Actions are on. Create the tag first:
+
+```bash
+cd ~/projects/$ORG/organisationos-foundation
+git tag v1 && git push origin v1
+```
+
+Foundation's own CI is unaffected either way: `self-ci.yml` calls its reusables by local path, not by tag.
+
+Now enable Actions. They are disabled on the published Leadership and Domain templates precisely because Step 3 has not run on them. Enable them: **Settings → Actions → General → Allow all actions and reusable workflows** in each of the three repos, and under **Workflow permissions** confirm *Read repository contents and packages permissions* (the workflows that need more request it per job).
 
 Foundation's own CI (`self-ci.yml`) runs on pull requests only. Pushing to `main` produces no run; that is expected.
 
@@ -142,7 +165,18 @@ for r in foundation leadership domain; do
 done
 ```
 
-## Step 10 — Now set yourself up as a person
+## Step 10 — Verify the setup
+
+Steps 3 to 5 each leave something that has to be true afterwards, and each fails quietly if it is not. One command checks all four, from the directory holding the three clones:
+
+```bash
+cd ~/projects/$ORG
+bash organisationos-foundation/.github/scripts/setup-check.sh
+```
+
+It reports on the `<adopter-org>` sweep, both supply-chain pins, the CODEOWNERS handles, and Foundation's `v1` tag. Exit 0 means setup is complete. Fix anything it names and re-run until it is.
+
+## Step 11 — Now set yourself up as a person
 
 You are also a user of the harness. Continue with [Joining an organisation that runs OrganisationOS](setup-person.md), which covers your role's `settings.local.json`, your `CLAUDE.local.md`, and the smoke test that shows whether your session can reach Foundation — not whether its rules are loaded.
 
