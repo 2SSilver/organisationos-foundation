@@ -185,6 +185,18 @@ jobs:
       - name: Run banned-scan tests
         run: bash .github/scripts/banned-scan.test.sh
 
+  format-scan-tests:
+    # format-gate decides what may enter Git, and its extension parser shipped
+    # broken for the eight settings-example files across the three repos. Its
+    # logic is now tested rather than assumed: .github/scripts/format-scan.test.sh
+    # runs on every Foundation PR, covering all eight real filenames plus a
+    # non-whitelisted extension, an oversized binary and the name/path exemptions.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run format-scan tests
+        run: bash .github/scripts/format-scan.test.sh
+
   codeowners-lint:
     # MR-06: branch protection (docs/setup-org.md → Step 7) only matters if CODEOWNERS actually names >=1 owner
     # for every substrate path it is meant to gate. This catches the case where protection is
