@@ -2,6 +2,17 @@ name: format-gate
 
 on:
   workflow_call:
+    inputs:
+      foundation-repo:
+        type: string
+        required: false
+        default: ''
+        description: 'Foundation repo in owner/name format. Empty means <this repo owner>/organisationos-foundation.'
+      foundation-ref:
+        type: string
+        required: false
+        default: main
+        description: 'Foundation ref to checkout for FORMATS.md and format-scan.sh'
 
 jobs:
   format:
@@ -25,19 +36,18 @@ jobs:
             echo "::error file=FORMATS.md::format-gate.yml's allowed_extensions ('$normalized_allowed') has drifted from FORMATS.md's whitelist ('$formats_extensions'). Update this workflow's allowed_extensions to match FORMATS.md (or vice versa if FORMATS.md is the one that changed), then re-run."
             exit 1
           fi
-      - name: Checkout Foundation's canonical FORMATS.md (MR-18b)
+      - name: Checkout Foundation (MR-18b + the shared format scan)
         # Leadership and Domain each carry a mirror of Foundation's FORMATS.md
-        # (a one-line mirror note + the identical body). This step is a no-op
-        # in Foundation's own repo — nothing to compare against there.
+        # (a one-line mirror note + the identical body), and neither carries
+        # format-scan.sh. One full checkout serves both the SSOT diff below and
+        # the scan step. This is a no-op in Foundation's own repo, which has
+        # both on disk already.
         if: ${{ !endsWith(github.repository, 'organisationos-foundation') }}
         uses: actions/checkout@v4
         with:
-          repository: ${{ github.repository_owner }}/organisationos-foundation
-          ref: main
-          sparse-checkout: |
-            FORMATS.md
-          sparse-checkout-cone-mode: false
-          path: _foundation-canonical
+          repository: ${{ inputs.foundation-repo != '' && inputs.foundation-repo || format('{0}/organisationos-foundation', github.repository_owner) }}
+          ref: ${{ inputs.foundation-ref }}
+          path: _foundation
       - name: SSOT check — FORMATS.md byte-identical to canonical (MR-18b)
         # Kept as a diff check rather than replacing the mirrors with a
         # two-line `@`-import stub, because FORMATS.md is read standalone by
@@ -47,57 +57,23 @@ jobs:
           set -e
           # Compare bodies only: this repo's FORMATS.md carries a mirror-note
           # header (lines 1-2) that Foundation's canonical copy does not.
-          if ! diff -q <(tail -n +3 FORMATS.md) _foundation-canonical/FORMATS.md > /dev/null; then
+          if ! diff -q <(tail -n +3 FORMATS.md) _foundation/FORMATS.md > /dev/null; then
             echo "::error file=FORMATS.md::this repo's FORMATS.md whitelist has diverged from Foundation's canonical copy. Sync it to match, or open a Foundation PR first if the canonical whitelist needs to change."
-            diff <(tail -n +3 FORMATS.md) _foundation-canonical/FORMATS.md || true
+            diff <(tail -n +3 FORMATS.md) _foundation/FORMATS.md || true
             exit 1
           fi
       - name: Verify changed files against FORMATS.md whitelist
         run: |
           set -e
+          allowed_extensions="md txt csv tsv json jsonc yaml yml toml html svg png pdf excalidraw drawio"
+          scan_script="_foundation/.github/scripts/format-scan.sh"
+          if [ ! -f "$scan_script" ]; then scan_script=".github/scripts/format-scan.sh"; fi
+          if [ ! -f "$scan_script" ]; then
+            echo "::error::format-scan.sh not found in the Foundation checkout at ref '${{ inputs.foundation-ref }}', nor in this repo."
+            echo "::error::This workflow version requires it. Point inputs.foundation-ref at a Foundation commit that includes .github/scripts/format-scan.sh (main does)."
+            exit 1
+          fi
           changed=$(git diff --name-only --diff-filter=AM "origin/${GITHUB_BASE_REF}...HEAD")
           if [ -z "$changed" ]; then exit 0; fi
-          allowed_extensions="md txt csv tsv json jsonc yaml yml toml html svg png pdf excalidraw drawio"
-          fail=0
-          aggregate_bytes=0
-          per_pr_cap_mb=10
-          for f in $changed; do
-            [ -f "$f" ] || continue
-            ext="${f##*.}"
-            base="${f##*/}"
-            # Allow files without extensions (e.g. CODEOWNERS, .gitignore, .lycheeignore handled by name)
-            case "$base" in
-              CODEOWNERS|.gitignore|.gitkeep|.lycheeignore) continue ;;
-            esac
-            # Harness machinery under .github/ — hooks and the CI scripts the
-            # workflows call. FORMATS.md governs content formats; these are not
-            # content, so they are exempt by path rather than by extension.
-            case "$f" in .github/hooks/*) continue ;; esac
-            case "$f" in .github/scripts/*) continue ;; esac
-            if ! echo "$allowed_extensions" | grep -wq "$ext"; then
-              echo "::error file=$f::extension '.$ext' is not on FORMATS.md's whitelist."
-              echo "The harness keeps non-whitelisted files outside Git. Add a reference in the relevant domain's references.md with the URL where this file lives, or remove the file from the PR. See FORMATS.md."
-              fail=1
-              continue
-            fi
-            # Per-format size caps
-            size=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f")
-            aggregate_bytes=$((aggregate_bytes + size))
-            cap=0
-            case "$ext" in
-              svg) cap=204800 ;;        # 200 KB
-              png|pdf) cap=2097152 ;;   # 2 MB
-              excalidraw|drawio) cap=512000 ;;  # 500 KB
-            esac
-            if [ "$cap" -gt 0 ] && [ "$size" -gt "$cap" ]; then
-              echo "::error file=$f::binary exceeds the per-format size cap for .$ext (cap: $cap bytes, file: $size bytes). See FORMATS.md."
-              fail=1
-            fi
-          done
-          # Per-PR aggregate cap
-          aggregate_mb=$((aggregate_bytes / 1048576))
-          if [ "$aggregate_mb" -gt "$per_pr_cap_mb" ]; then
-            echo "::error::PR introduces ${aggregate_mb}MB of new content (cap: ${per_pr_cap_mb}MB). Split this PR."
-            fail=1
-          fi
-          exit $fail
+          # shellcheck disable=SC2086
+          bash "$scan_script" "$allowed_extensions" $changed
