@@ -197,6 +197,18 @@ jobs:
       - name: Run format-scan tests
         run: bash .github/scripts/format-scan.test.sh
 
+  setup-check-tests:
+    # setup-check.sh runs on an adopter's workstation, where nothing compels
+    # them to run it, so its own correctness is the only part that can be
+    # enforced. The fixture suite builds six synthetic clone sets — complete,
+    # untagged, unsubstituted org, unsubstituted marketplace ref, unsubstituted
+    # plugin version, placeholder owner — and asserts the verdict on each.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run setup-check tests
+        run: bash .github/scripts/setup-check.test.sh
+
   codeowners-lint:
     # MR-06: branch protection (docs/setup-org.md → Step 7) only matters if CODEOWNERS actually names >=1 owner
     # for every substrate path it is meant to gate. This catches the case where protection is
