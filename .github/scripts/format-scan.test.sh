@@ -50,7 +50,7 @@ check "example-domain-lead resolves to json"         0 "standards/templates/onbo
 check "example-leader resolves to json"              0 "standards/templates/onboarding/settings.local.json.example-leader"
 check "example-product-owner resolves to json"       0 "standards/templates/onboarding/settings.local.json.example-product-owner"
 check "example-team-member resolves to json"         0 "standards/templates/onboarding/settings.local.json.example-team-member"
-check "all eight together pass"                      0 ".claude/settings.local.json.example" \
+check "all six distinct basenames together pass"     0 ".claude/settings.local.json.example" \
   "standards/templates/onboarding/settings.local.json.example-admin" \
   "standards/templates/onboarding/settings.local.json.example-domain-lead" \
   "standards/templates/onboarding/settings.local.json.example-leader" \
