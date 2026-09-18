@@ -189,8 +189,9 @@ jobs:
     # format-gate decides what may enter Git, and its extension parser shipped
     # broken for the eight settings-example files across the three repos. Its
     # logic is now tested rather than assumed: .github/scripts/format-scan.test.sh
-    # runs on every Foundation PR, covering all eight real filenames plus a
-    # non-whitelisted extension, an oversized binary and the name/path exemptions.
+    # runs on every Foundation PR, covering the six distinct basenames the eight
+    # real files reduce to, plus a non-whitelisted extension, an oversized binary
+    # and the name/path exemptions.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

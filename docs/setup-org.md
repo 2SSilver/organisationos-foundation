@@ -52,7 +52,7 @@ for r in foundation leadership domain; do
 done
 ```
 
-Commit and push in each repo. The `~/projects/<adopter-org>/` folder trees drawn in the READMEs are illustrations and are left as they are by this sweep only if you prefer — they are prose, not configuration.
+Commit and push in each repo. The `~/projects/<adopter-org>/` folder trees drawn in the READMEs are illustrations, but the sweep above is a blanket substitution and rewrites them along with everything else — the placeholder must not remain anywhere, or Step 10's check fails.
 
 ### Also in Step 3 — pin the plugin supply chain
 
@@ -69,7 +69,7 @@ Set both in all three repos, then delete the `_notes` array from each file; it i
 
 ## Step 4 — Bind CODEOWNERS
 
-Each repo's `.github/CODEOWNERS` names `@placeholder-admin`, `@placeholder-leader` and `@placeholder-domain-N-lead`. Replace them with real GitHub handles in all three repos. These handles appear only in CODEOWNERS.
+Each repo's `.github/CODEOWNERS` names `@placeholder-admin`, `@placeholder-leader` and `@placeholder-domain-N-lead`. Replace them with real GitHub handles in all three repos. CODEOWNERS is the only place you need to substitute them — the reviewer assignments are what you are editing here.
 
 ```bash
 grep -rn 'placeholder-' organisationos-*/.github/CODEOWNERS

@@ -82,7 +82,7 @@ fi
 if [ -z "$(git -C "$root/organisationos-foundation" tag -l v1 2>/dev/null)" ]; then
   say_fail "Foundation has no v1 tag — every Leadership and Domain workflow pins @v1. See docs/setup-org.md Step 5"
 else
-  say_pass "Foundation carries the v1 tag"
+  say_pass "Foundation's local clone carries a v1 tag — confirm 'git push origin v1' has also run; this check cannot see the remote"
 fi
 
 if [ "$fail" -eq 0 ]; then
